@@ -94,6 +94,12 @@ export function IdiomCard({ idiom }: IdiomCardProps) {
     }
   };
 
+  const handleRerecord = () => {
+    setUserAudioUrl(null);
+    setEncouragement(null);
+    startRecording();
+  }
+
   return (
     <Card className="w-full max-w-md mx-auto shadow-lg overflow-hidden flex flex-col">
       {userAudioUrl && <audio ref={audioRef} src={userAudioUrl} />}
@@ -122,18 +128,19 @@ export function IdiomCard({ idiom }: IdiomCardProps) {
           </div>
         </div>
 
-        <div className="flex justify-center items-center gap-4 my-4">
+        <div className="flex justify-center items-center gap-4 my-6">
           {!isRecording && (
             <Button
               size="lg"
               className="bg-accent hover:bg-accent/90 text-accent-foreground"
-              onClick={startRecording}
-              aria-label="Start recording"
+              onClick={userAudioUrl ? handleRerecord : startRecording}
+              aria-label={userAudioUrl ? "Re-record" : "Start recording"}
             >
               <Mic className="w-6 h-6 mr-2" />
-              Record
+              {userAudioUrl ? 'Re-record' : 'Record'}
             </Button>
           )}
+
           {isRecording && (
             <Button
               size="lg"
@@ -146,19 +153,14 @@ export function IdiomCard({ idiom }: IdiomCardProps) {
               Stop
             </Button>
           )}
+
+          {userAudioUrl && !isRecording && (
+            <Button onClick={handlePlayUserAudio} variant="secondary" size="lg">
+              <Play className="mr-2 h-5 w-5" /> Your Attempt
+            </Button>
+          )}
         </div>
         
-        {userAudioUrl && (
-          <div className="flex justify-center items-center gap-4 my-4">
-            <Button onClick={handlePlayUserAudio} variant="secondary">
-              <Play className="mr-2 h-4 w-4" /> Your Attempt
-            </Button>
-            <Button onClick={startRecording} variant="ghost" size="icon" aria-label="Re-record">
-              <RefreshCw className="h-5 w-5 text-muted-foreground" />
-            </Button>
-          </div>
-        )}
-
         <div className="mt-6 min-h-[60px] flex items-center justify-center">
           {isLoadingEncouragement && (
             <div className="flex items-center text-muted-foreground">
