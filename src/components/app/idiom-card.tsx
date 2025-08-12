@@ -137,10 +137,10 @@ export function IdiomCard({ idiom }: IdiomCardProps) {
         </div>
       </CardContent>
 
-      <CardFooter className="p-4 border-t">
+      <CardFooter className="p-0 border-t">
         <Sheet>
           <SheetTrigger asChild>
-            <Button variant="outline" className="w-full">
+            <Button variant="outline" className="w-full border-t-0 border-x-0 rounded-t-none">
               <Info className="w-5 h-5 mr-2" />
               Details & Meaning
             </Button>
