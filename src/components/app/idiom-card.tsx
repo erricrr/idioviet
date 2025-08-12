@@ -206,8 +206,12 @@ export function IdiomCard({ idiom }: IdiomCardProps) {
                 <p>{idiom.actualMeaning}</p>
               </div>
               <div>
-                <p className="font-semibold text-muted-foreground">History & Context</p>
-                <p>{idiom.history}</p>
+                <p className="font-semibold text-muted-foreground">Example (Vietnamese)</p>
+                <p>{idiom.exampleVietnamese}</p>
+              </div>
+               <div>
+                <p className="font-semibold text-muted-foreground">Example (English)</p>
+                <p>{idiom.exampleEnglish}</p>
               </div>
             </AccordionContent>
           </AccordionItem>
