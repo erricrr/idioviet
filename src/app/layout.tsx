@@ -3,8 +3,8 @@ import './globals.css';
 import { Toaster } from "@/components/ui/toaster";
 
 export const metadata: Metadata = {
-  title: 'VietSpeak',
-  description: 'Learn Vietnamese idioms and proverbs by practicing your pronunciation.',
+  title: 'idiViet',
+  description: 'Learn Vietnamese idioms and proverbs with idiViet.',
 };
 
 export default function RootLayout({
