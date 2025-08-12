@@ -75,7 +75,6 @@ export function SavedIdiomsList({
   return (
     <div className="w-full max-w-4xl mx-auto flex flex-col md:flex-row gap-4 h-[calc(100vh-200px)]">
         <div className="w-full md:w-1/3">
-            <h2 className="text-xl font-semibold mb-2 text-center md:text-left">Your Saved Idioms</h2>
             <ScrollArea className="h-full pr-4">
                  <div className="flex flex-col gap-2">
                     {idioms.map((idiom) => (
