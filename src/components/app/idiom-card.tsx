@@ -22,6 +22,7 @@ import {
   Square,
   Play,
   Info,
+  Bookmark,
 } from "lucide-react";
 import { useRecorder } from "@/hooks/use-recorder";
 import { useEffect, useRef, useState } from "react";
@@ -31,9 +32,11 @@ import { Separator } from "@/components/ui/separator";
 
 interface IdiomCardProps {
   idiom: Idiom;
+  isSaved: boolean;
+  onSaveToggle: (id: number) => void;
 }
 
-export function IdiomCard({ idiom }: IdiomCardProps) {
+export function IdiomCard({ idiom, isSaved, onSaveToggle }: IdiomCardProps) {
   const { toast } = useToast();
   const { isRecording, audioBlob, startRecording, stopRecording } = useRecorder();
   const [userAudioUrl, setUserAudioUrl] = useState<string | null>(null);
@@ -75,11 +78,20 @@ export function IdiomCard({ idiom }: IdiomCardProps) {
   }
 
   return (
-    <Card className="w-full max-w-md mx-auto shadow-lg flex flex-col">
+    <Card className="w-full max-w-md mx-auto shadow-lg flex flex-col border-none">
       {userAudioUrl && <audio ref={audioRef} src={userAudioUrl} />}
-      <CardHeader>
+      <CardHeader className="relative">
+        <Button
+            variant="ghost"
+            size="icon"
+            className="absolute top-2 right-2"
+            onClick={() => onSaveToggle(idiom.id)}
+            aria-label={isSaved ? "Unsave idiom" : "Save idiom"}
+        >
+            <Bookmark className={`w-6 h-6 ${isSaved ? 'fill-primary text-primary' : 'text-primary'}`} />
+        </Button>
         <CardTitle 
-          className="text-2xl font-bold text-center text-primary tracking-tight cursor-pointer hover:text-primary/80 transition-colors"
+          className="text-2xl font-bold text-center text-primary tracking-tight cursor-pointer hover:text-primary/80 transition-colors pt-8"
           onClick={() => speak(idiom.phrase)}
         >
           {idiom.phrase}
@@ -103,7 +115,7 @@ export function IdiomCard({ idiom }: IdiomCardProps) {
           </div>
         </div>
 
-        <div className="flex justify-center items-center gap-4 my-4">
+        <div className="flex justify-center items-center gap-4">
           {!isRecording && (
             <Button
               size="lg"
