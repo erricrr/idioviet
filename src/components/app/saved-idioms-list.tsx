@@ -84,6 +84,9 @@ export function SavedIdiomsList({
           <Button className="w-full max-w-md mx-auto mb-4">Review All Saved</Button>
         </DialogTrigger>
         <DialogContent className="max-w-[90vw] w-full md:max-w-lg p-4 border-none bg-transparent shadow-none">
+          <DialogHeader>
+            <DialogTitle className="sr-only">Review All Saved Idioms</DialogTitle>
+          </DialogHeader>
             <Carousel className="w-full" opts={{ loop: true }}>
                 <CarouselContent>
                 {idioms.map((idiom) => (
@@ -128,6 +131,9 @@ export function SavedIdiomsList({
 
       <Dialog open={!!selectedIdiom} onOpenChange={(isOpen) => !isOpen && setSelectedIdiom(null)}>
         <DialogContent className="max-w-[90vw] w-full md:max-w-lg p-4 border-none bg-transparent shadow-none">
+            <DialogHeader>
+              <DialogTitle className="sr-only">Idiom Details</DialogTitle>
+            </DialogHeader>
             {selectedIdiom && (
                  <IdiomCard
                     idiom={selectedIdiom}
