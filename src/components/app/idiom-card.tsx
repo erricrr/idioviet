@@ -75,7 +75,7 @@ export function IdiomCard({ idiom }: IdiomCardProps) {
   }
 
   return (
-    <Card className="w-full max-w-md mx-auto shadow-lg flex flex-col h-full touch-pan-y">
+    <Card className="w-full max-w-md mx-auto shadow-lg flex flex-col touch-pan-y">
       {userAudioUrl && <audio ref={audioRef} src={userAudioUrl} />}
       <CardHeader>
         <CardTitle 
