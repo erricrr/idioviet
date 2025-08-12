@@ -21,15 +21,10 @@ import {
   Square,
   Play,
   Info,
-  LoaderCircle,
-  Sparkles,
-  RefreshCw,
 } from "lucide-react";
 import { useRecorder } from "@/hooks/use-recorder";
 import { useEffect, useRef, useState } from "react";
-import { generateEncouragementMessage } from "@/ai/flows/generate-encouragement";
 import { useToast } from "@/hooks/use-toast";
-import { blobToBase64 } from "@/lib/utils";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface IdiomCardProps {
@@ -40,15 +35,12 @@ export function IdiomCard({ idiom }: IdiomCardProps) {
   const { toast } = useToast();
   const { isRecording, audioBlob, startRecording, stopRecording } = useRecorder();
   const [userAudioUrl, setUserAudioUrl] = useState<string | null>(null);
-  const [encouragement, setEncouragement] = useState<string | null>(null);
-  const [isLoadingEncouragement, setIsLoadingEncouragement] = useState(false);
   const audioRef = useRef<HTMLAudioElement>(null);
 
   useEffect(() => {
     if (audioBlob) {
       const url = URL.createObjectURL(audioBlob);
       setUserAudioUrl(url);
-      getEncouragement();
       return () => URL.revokeObjectURL(url);
     }
   }, [audioBlob]);
@@ -69,26 +61,6 @@ export function IdiomCard({ idiom }: IdiomCardProps) {
     }
   };
 
-  const getEncouragement = async () => {
-    if (!audioBlob) return;
-    setIsLoadingEncouragement(true);
-    setEncouragement(null);
-    try {
-      const recordingDataUri = await blobToBase64(audioBlob);
-      const result = await generateEncouragementMessage({ recordingDataUri });
-      setEncouragement(result.encouragementMessage);
-    } catch (error) {
-      console.error("Error generating encouragement:", error);
-      toast({
-        variant: "destructive",
-        title: "AI Error",
-        description: "Could not generate encouragement message.",
-      });
-    } finally {
-      setIsLoadingEncouragement(false);
-    }
-  };
-
   const handlePlayUserAudio = () => {
     if (audioRef.current) {
       audioRef.current.play();
@@ -97,7 +69,6 @@ export function IdiomCard({ idiom }: IdiomCardProps) {
 
   const handleRerecord = () => {
     setUserAudioUrl(null);
-    setEncouragement(null);
     startRecording();
   }
 
@@ -160,23 +131,6 @@ export function IdiomCard({ idiom }: IdiomCardProps) {
               <Button onClick={handlePlayUserAudio} variant="secondary" size="lg">
                 <Play className="mr-2 h-5 w-5" /> Your Attempt
               </Button>
-            )}
-          </div>
-          
-          <div className="mt-6 min-h-[60px] flex items-center justify-center">
-            {isLoadingEncouragement && (
-              <div className="flex items-center text-muted-foreground">
-                <LoaderCircle className="mr-2 h-5 w-5 animate-spin" />
-                <p>Generating encouragement...</p>
-              </div>
-            )}
-            {encouragement && !isLoadingEncouragement && (
-              <div className="text-center p-3 bg-primary/10 rounded-lg">
-                  <p className="flex items-center justify-center text-primary font-medium">
-                    <Sparkles className="mr-2 h-5 w-5 text-amber-500" />
-                    {encouragement}
-                  </p>
-              </div>
             )}
           </div>
         </CardContent>
