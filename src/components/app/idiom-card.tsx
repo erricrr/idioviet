@@ -73,7 +73,7 @@ export function IdiomCard({ idiom }: IdiomCardProps) {
   }
 
   return (
-    <Card className="w-full max-w-md mx-auto shadow-lg overflow-hidden flex flex-col h-full">
+    <Card className="w-full max-w-md mx-auto shadow-lg flex flex-col h-full">
       {userAudioUrl && <audio ref={audioRef} src={userAudioUrl} />}
       <CardHeader>
         <CardTitle 
@@ -83,8 +83,9 @@ export function IdiomCard({ idiom }: IdiomCardProps) {
           {idiom.phrase}
         </CardTitle>
       </CardHeader>
-      <ScrollArea className="flex-grow">
-        <CardContent className="flex-grow p-6 pt-0">
+      
+      <div className="flex-grow flex flex-col min-h-0">
+        <CardContent className="p-6 pt-0">
           <div className="text-center mb-6">
             <p className="font-semibold text-lg">Practice in chunks:</p>
             <div className="flex flex-wrap justify-center gap-2 mt-2">
@@ -134,35 +135,38 @@ export function IdiomCard({ idiom }: IdiomCardProps) {
             )}
           </div>
         </CardContent>
-      </ScrollArea>
-      <CardFooter className="p-0">
-        <Accordion type="single" collapsible className="w-full">
-          <AccordionItem value="item-1" className="border-t">
-            <AccordionTrigger className="px-6 py-4 text-base font-semibold">
-              <Info className="w-5 h-5 mr-3 text-primary" />
-              Details & Meaning
-            </AccordionTrigger>
-            <AccordionContent className="px-6 pb-6 space-y-4 text-base">
-              <div>
-                <p className="font-semibold text-muted-foreground">Literal Translation</p>
-                <p>"{idiom.literalTranslation}"</p>
-              </div>
-              <div>
-                <p className="font-semibold text-muted-foreground">Actual Meaning</p>
-                <p>{idiom.actualMeaning}</p>
-              </div>
-              <div>
-                <p className="font-semibold text-muted-foreground">Example (Vietnamese)</p>
-                <p>{idiom.exampleVietnamese}</p>
-              </div>
-               <div>
-                <p className="font-semibold text-muted-foreground">Example (English)</p>
-                <p>{idiom.exampleEnglish}</p>
-              </div>
-            </AccordionContent>
-          </AccordionItem>
-        </Accordion>
-      </CardFooter>
+
+        <CardFooter className="p-0 flex-grow min-h-0">
+            <Accordion type="single" collapsible className="w-full border-t">
+              <AccordionItem value="item-1" className="border-b-0">
+                <AccordionTrigger className="px-6 py-4 text-base font-semibold">
+                  <Info className="w-5 h-5 mr-3 text-primary" />
+                  Details & Meaning
+                </AccordionTrigger>
+                <AccordionContent className="px-6 pb-6 text-base max-h-[30vh] overflow-y-auto">
+                   <div className="space-y-4">
+                      <div>
+                        <p className="font-semibold text-muted-foreground">Literal Translation</p>
+                        <p>"{idiom.literalTranslation}"</p>
+                      </div>
+                      <div>
+                        <p className="font-semibold text-muted-foreground">Actual Meaning</p>
+                        <p>{idiom.actualMeaning}</p>
+                      </div>
+                      <div>
+                        <p className="font-semibold text-muted-foreground">Example (Vietnamese)</p>
+                        <p>{idiom.exampleVietnamese}</p>
+                      </div>
+                      <div>
+                        <p className="font-semibold text-muted-foreground">Example (English)</p>
+                        <p>{idiom.exampleEnglish}</p>
+                      </div>
+                   </div>
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
+        </CardFooter>
+      </div>
     </Card>
   );
 }
