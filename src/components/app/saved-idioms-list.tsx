@@ -5,34 +5,18 @@ import type { Idiom } from "@/data/idioms";
 import { ScrollArea } from "../ui/scroll-area";
 import { Bookmark, MessageCircle, PlayCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Card, CardContent } from "../ui/card";
 import {
   Sheet,
   SheetContent,
   SheetHeader,
   SheetTitle,
-  SheetTrigger,
 } from "../ui/sheet";
 import { Button } from "../ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "../ui/dialog";
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from "../ui/carousel";
-import { IdiomCard } from "./idiom-card";
 
 interface SavedIdiomsListProps {
   idioms: Idiom[];
   onSelectIdiom: (id: number) => void;
+  onReviewAll: () => void;
   isSheetOpen: boolean;
   onSheetOpenChange: (isOpen: boolean) => void;
   savedIdiomIds: Set<number>;
@@ -42,6 +26,7 @@ interface SavedIdiomsListProps {
 export function SavedIdiomsList({
   idioms,
   onSelectIdiom,
+  onReviewAll,
   isSheetOpen,
   onSheetOpenChange,
   savedIdiomIds,
@@ -51,6 +36,11 @@ export function SavedIdiomsList({
     onSelectIdiom(idiom.id);
     onSheetOpenChange(false);
   };
+
+  const handleReviewAllClick = () => {
+    onReviewAll();
+    onSheetOpenChange(false);
+  }
 
   return (
     <Sheet open={isSheetOpen} onOpenChange={onSheetOpenChange}>
@@ -74,36 +64,10 @@ export function SavedIdiomsList({
         ) : (
           <>
             <div className="p-4">
-              <Dialog>
-                <DialogTrigger asChild>
-                  <Button className="w-full">
-                    <PlayCircle className="w-5 h-5 mr-2" />
-                    Review All Saved
-                  </Button>
-                </DialogTrigger>
-                <DialogContent className="max-w-[90vw] md:max-w-lg p-0 border-none">
-                   <DialogHeader className="hidden">
-                    <DialogTitle>Review All Saved Idioms</DialogTitle>
-                  </DialogHeader>
-                  <Carousel opts={{ loop: true }} className="w-full">
-                    <CarouselContent>
-                      {idioms.map((idiom) => (
-                        <CarouselItem key={idiom.id}>
-                          <div className="p-1">
-                            <IdiomCard
-                              idiom={idiom}
-                              isSaved={savedIdiomIds.has(idiom.id)}
-                              onSaveToggle={onSaveToggle}
-                            />
-                          </div>
-                        </CarouselItem>
-                      ))}
-                    </CarouselContent>
-                    <CarouselPrevious className="ml-[-8px] md:ml-[-24px]" />
-                    <CarouselNext className="mr-[-8px] md:mr-[-24px]" />
-                  </Carousel>
-                </DialogContent>
-              </Dialog>
+              <Button className="w-full" onClick={handleReviewAllClick}>
+                <PlayCircle className="w-5 h-5 mr-2" />
+                Review All Saved
+              </Button>
             </div>
             <ScrollArea className="h-[calc(100%-4rem-56px)] mt-0">
               <div className="flex flex-col gap-2 px-4 pb-4">
