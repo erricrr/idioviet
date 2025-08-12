@@ -25,7 +25,6 @@ import {
 import { useRecorder } from "@/hooks/use-recorder";
 import { useEffect, useRef, useState } from "react";
 import { useToast } from "@/hooks/use-toast";
-import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface IdiomCardProps {
   idiom: Idiom;
@@ -143,27 +142,25 @@ export function IdiomCard({ idiom }: IdiomCardProps) {
                   <Info className="w-5 h-5 mr-3 text-primary" />
                   Details & Meaning
                 </AccordionTrigger>
-                <AccordionContent className="px-6 pb-6 text-base">
-                   <ScrollArea className="h-full max-h-[30vh] pr-4">
-                      <div className="space-y-4">
-                        <div>
-                          <p className="font-semibold text-muted-foreground">Literal Translation</p>
-                          <p>"{idiom.literalTranslation}"</p>
-                        </div>
-                        <div>
-                          <p className="font-semibold text-muted-foreground">Actual Meaning</p>
-                          <p>{idiom.actualMeaning}</p>
-                        </div>
-                        <div>
-                          <p className="font-semibold text-muted-foreground">Example (Vietnamese)</p>
-                          <p>{idiom.exampleVietnamese}</p>
-                        </div>
-                        <div>
-                          <p className="font-semibold text-muted-foreground">Example (English)</p>
-                          <p>{idiom.exampleEnglish}</p>
-                        </div>
-                      </div>
-                   </ScrollArea>
+                <AccordionContent className="px-6 pb-6 text-base max-h-[30vh] overflow-y-auto">
+                  <div className="space-y-4 pr-4">
+                    <div>
+                      <p className="font-semibold text-muted-foreground">Literal Translation</p>
+                      <p>"{idiom.literalTranslation}"</p>
+                    </div>
+                    <div>
+                      <p className="font-semibold text-muted-foreground">Actual Meaning</p>
+                      <p>{idiom.actualMeaning}</p>
+                    </div>
+                    <div>
+                      <p className="font-semibold text-muted-foreground">Example (Vietnamese)</p>
+                      <p>{idiom.exampleVietnamese}</p>
+                    </div>
+                    <div>
+                      <p className="font-semibold text-muted-foreground">Example (English)</p>
+                      <p>{idiom.exampleEnglish}</p>
+                    </div>
+                  </div>
                 </AccordionContent>
               </AccordionItem>
             </Accordion>
