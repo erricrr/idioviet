@@ -160,7 +160,6 @@ export function IdiomCard({ idiom, isSaved, onSaveToggle }: IdiomCardProps) {
               size="lg"
               variant="destructive"
               onClick={stopRecording}
-              className="animate-pulse"
               aria-label="Stop recording"
             >
               <Square className="w-6 h-6 mr-2" />
