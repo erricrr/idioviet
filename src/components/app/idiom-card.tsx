@@ -30,6 +30,7 @@ import { useEffect, useRef, useState } from "react";
 import { generateEncouragementMessage } from "@/ai/flows/generate-encouragement";
 import { useToast } from "@/hooks/use-toast";
 import { blobToBase64 } from "@/lib/utils";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface IdiomCardProps {
   idiom: Idiom;
@@ -101,7 +102,7 @@ export function IdiomCard({ idiom }: IdiomCardProps) {
   }
 
   return (
-    <Card className="w-full max-w-md mx-auto shadow-lg overflow-hidden flex flex-col">
+    <Card className="w-full max-w-md mx-auto shadow-lg overflow-hidden flex flex-col h-full">
       {userAudioUrl && <audio ref={audioRef} src={userAudioUrl} />}
       <CardHeader>
         <CardTitle 
@@ -111,74 +112,75 @@ export function IdiomCard({ idiom }: IdiomCardProps) {
           {idiom.phrase}
         </CardTitle>
       </CardHeader>
-      <CardContent className="flex-grow">
-        <div className="text-center mb-6">
-          <p className="font-semibold text-lg">Practice in chunks:</p>
-          <div className="flex flex-wrap justify-center gap-2 mt-2">
-            {idiom.chunks.map((chunk, index) => (
-              <Badge
-                key={index}
-                variant="secondary"
-                className="text-lg px-4 py-2 cursor-pointer hover:bg-primary/20 transition-colors"
-                onClick={() => speak(chunk.text)}
-              >
-                {chunk.text}
-              </Badge>
-            ))}
+      <ScrollArea className="flex-grow">
+        <CardContent className="flex-grow p-6 pt-0">
+          <div className="text-center mb-6">
+            <p className="font-semibold text-lg">Practice in chunks:</p>
+            <div className="flex flex-wrap justify-center gap-2 mt-2">
+              {idiom.chunks.map((chunk, index) => (
+                <Badge
+                  key={index}
+                  variant="secondary"
+                  className="text-lg px-4 py-2 cursor-pointer hover:bg-primary/20 transition-colors"
+                  onClick={() => speak(chunk.text)}
+                >
+                  {chunk.text}
+                </Badge>
+              ))}
+            </div>
           </div>
-        </div>
 
-        <div className="flex justify-center items-center gap-4 my-6">
-          {!isRecording && (
-            <Button
-              size="lg"
-              className="bg-accent hover:bg-accent/90 text-accent-foreground"
-              onClick={userAudioUrl ? handleRerecord : startRecording}
-              aria-label={userAudioUrl ? "Re-record" : "Start recording"}
-            >
-              <Mic className="w-6 h-6 mr-2" />
-              {userAudioUrl ? 'Re-record' : 'Record'}
-            </Button>
-          )}
+          <div className="flex justify-center items-center gap-4 my-6">
+            {!isRecording && (
+              <Button
+                size="lg"
+                className="bg-accent hover:bg-accent/90 text-accent-foreground"
+                onClick={userAudioUrl ? handleRerecord : startRecording}
+                aria-label={userAudioUrl ? "Re-record" : "Start recording"}
+              >
+                <Mic className="w-6 h-6 mr-2" />
+                {userAudioUrl ? 'Re-record' : 'Record'}
+              </Button>
+            )}
 
-          {isRecording && (
-            <Button
-              size="lg"
-              variant="destructive"
-              onClick={stopRecording}
-              className="animate-pulse"
-              aria-label="Stop recording"
-            >
-              <Square className="w-6 h-6 mr-2" />
-              Stop
-            </Button>
-          )}
+            {isRecording && (
+              <Button
+                size="lg"
+                variant="destructive"
+                onClick={stopRecording}
+                className="animate-pulse"
+                aria-label="Stop recording"
+              >
+                <Square className="w-6 h-6 mr-2" />
+                Stop
+              </Button>
+            )}
 
-          {userAudioUrl && !isRecording && (
-            <Button onClick={handlePlayUserAudio} variant="secondary" size="lg">
-              <Play className="mr-2 h-5 w-5" /> Your Attempt
-            </Button>
-          )}
-        </div>
-        
-        <div className="mt-6 min-h-[60px] flex items-center justify-center">
-          {isLoadingEncouragement && (
-            <div className="flex items-center text-muted-foreground">
-              <LoaderCircle className="mr-2 h-5 w-5 animate-spin" />
-              <p>Generating encouragement...</p>
-            </div>
-          )}
-          {encouragement && !isLoadingEncouragement && (
-            <div className="text-center p-3 bg-primary/10 rounded-lg">
-                <p className="flex items-center justify-center text-primary font-medium">
-                  <Sparkles className="mr-2 h-5 w-5 text-amber-500" />
-                  {encouragement}
-                </p>
-            </div>
-          )}
-        </div>
-
-      </CardContent>
+            {userAudioUrl && !isRecording && (
+              <Button onClick={handlePlayUserAudio} variant="secondary" size="lg">
+                <Play className="mr-2 h-5 w-5" /> Your Attempt
+              </Button>
+            )}
+          </div>
+          
+          <div className="mt-6 min-h-[60px] flex items-center justify-center">
+            {isLoadingEncouragement && (
+              <div className="flex items-center text-muted-foreground">
+                <LoaderCircle className="mr-2 h-5 w-5 animate-spin" />
+                <p>Generating encouragement...</p>
+              </div>
+            )}
+            {encouragement && !isLoadingEncouragement && (
+              <div className="text-center p-3 bg-primary/10 rounded-lg">
+                  <p className="flex items-center justify-center text-primary font-medium">
+                    <Sparkles className="mr-2 h-5 w-5 text-amber-500" />
+                    {encouragement}
+                  </p>
+              </div>
+            )}
+          </div>
+        </CardContent>
+      </ScrollArea>
       <CardFooter className="p-0">
         <Accordion type="single" collapsible className="w-full">
           <AccordionItem value="item-1" className="border-t">
