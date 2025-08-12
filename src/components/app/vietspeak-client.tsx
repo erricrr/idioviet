@@ -53,7 +53,7 @@ export function VietSpeakClient() {
         return () => {
           carouselApi.off("select", handleSelect);
         };
-    }, [carouselApi]);
+    }, [carouselApi, isReviewingSaved]);
 
     const toggleSaveIdiom = (id: number) => {
         const newSavedIds = new Set(savedIdiomIds);
@@ -99,13 +99,15 @@ export function VietSpeakClient() {
     const idiomsToShow = isReviewingSaved ? savedIdioms : allIdioms;
 
     return (
-        <div className="flex flex-col h-full">
+        <div className="flex flex-col h-full overflow-hidden">
             <Header onSavedListClick={() => setIsSavedListOpen(true)} savedCount={savedIdioms.length} />
-            <div className="px-4 pb-2">
-                <Progress value={progress} className="w-full" />
-            </div>
+            {idiomsToShow.length > 1 && (
+                <div className="px-4 pb-2">
+                    <Progress value={progress} className="w-full h-2" />
+                </div>
+            )}
             
-            <div className="flex-grow flex items-center justify-center p-4 pt-2 relative">
+            <div className="flex-grow flex items-center justify-center p-2 relative">
                 {isReviewingSaved && (
                     <Button 
                         onClick={handleExitReview}
@@ -136,14 +138,14 @@ export function VietSpeakClient() {
                         </CarouselItem>
                     )) : (
                         <CarouselItem>
-                            <div className="p-1 text-center text-muted-foreground">
+                            <div className="p-1 text-center text-muted-foreground h-96 flex items-center justify-center">
                                 No saved idioms to review.
                             </div>
                         </CarouselItem>
                     )}
                     </CarouselContent>
-                    <CarouselPrevious className="ml-[-8px] md:ml-[-24px]" />
-                    <CarouselNext className="mr-[-8px] md:mr-[-24px]" />
+                    <CarouselPrevious className="ml-2" />
+                    <CarouselNext className="mr-2" />
                 </Carousel>
             </div>
 
