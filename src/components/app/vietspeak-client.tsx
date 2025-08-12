@@ -1,3 +1,4 @@
+
 "use client"
 
 import { idioms } from "@/data/idioms";
