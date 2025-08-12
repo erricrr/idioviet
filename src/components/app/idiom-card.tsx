@@ -75,7 +75,7 @@ export function IdiomCard({ idiom }: IdiomCardProps) {
   }
 
   return (
-    <Card className="w-full max-w-md mx-auto shadow-lg flex flex-col h-full touch-none">
+    <Card className="w-full max-w-md mx-auto shadow-lg flex flex-col h-full touch-pan-y">
       {userAudioUrl && <audio ref={audioRef} src={userAudioUrl} />}
       <CardHeader>
         <CardTitle 
@@ -86,7 +86,7 @@ export function IdiomCard({ idiom }: IdiomCardProps) {
         </CardTitle>
       </CardHeader>
       
-      <CardContent className="p-6 pt-0 flex-grow flex flex-col">
+      <CardContent className="p-6 pt-0 flex flex-col">
         <div className="text-center mb-6">
           <p className="font-semibold text-lg">Practice in chunks:</p>
           <div className="flex flex-wrap justify-center gap-2 mt-2">
@@ -103,7 +103,7 @@ export function IdiomCard({ idiom }: IdiomCardProps) {
           </div>
         </div>
 
-        <div className="flex justify-center items-center gap-4 my-6">
+        <div className="flex justify-center items-center gap-4 my-4">
           {!isRecording && (
             <Button
               size="lg"
@@ -137,7 +137,7 @@ export function IdiomCard({ idiom }: IdiomCardProps) {
         </div>
       </CardContent>
 
-      <CardFooter className="p-4 border-t">
+      <CardFooter className="p-4 border-t mt-auto">
         <Sheet>
           <SheetTrigger asChild>
             <Button variant="outline" className="w-full">
@@ -146,7 +146,7 @@ export function IdiomCard({ idiom }: IdiomCardProps) {
             </Button>
           </SheetTrigger>
           <SheetContent side="bottom" className="rounded-t-lg">
-            <ScrollArea className="h-[80vh] w-full p-6">
+            <ScrollArea className="h-[80vh] w-full p-6 touch-pan-y">
               <SheetHeader className="text-left mb-6">
                 <SheetTitle className="text-2xl text-primary">{idiom.phrase}</SheetTitle>
                 <SheetDescription>
