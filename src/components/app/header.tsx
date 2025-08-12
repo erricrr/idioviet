@@ -1,4 +1,4 @@
-import { Flame, Bookmark } from 'lucide-react';
+import { Star, Bookmark } from 'lucide-react';
 import { Button } from '../ui/button';
 
 interface HeaderProps {
@@ -10,7 +10,7 @@ export function Header({ onSavedListClick, savedCount }: HeaderProps) {
   return (
     <header className="p-4 flex items-center justify-between shrink-0">
       <div className="flex items-center">
-        <Flame className="w-7 h-7 text-primary" />
+        <Star className="w-7 h-7 text-primary" />
         <h1 className="text-3xl font-bold text-primary ml-2 tracking-tight">idioViet</h1>
       </div>
       <div className="relative">
