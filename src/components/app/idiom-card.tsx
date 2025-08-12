@@ -28,6 +28,7 @@ import { useRecorder } from "@/hooks/use-recorder";
 import { useEffect, useRef, useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Separator } from "@/components/ui/separator";
 
 interface IdiomCardProps {
   idiom: Idiom;
@@ -75,7 +76,7 @@ export function IdiomCard({ idiom }: IdiomCardProps) {
   }
 
   return (
-    <Card className="w-full max-w-md mx-auto shadow-lg flex flex-col touch-pan-y">
+    <Card className="w-full max-w-md mx-auto shadow-lg flex flex-col">
       {userAudioUrl && <audio ref={audioRef} src={userAudioUrl} />}
       <CardHeader>
         <CardTitle 
@@ -154,19 +155,22 @@ export function IdiomCard({ idiom }: IdiomCardProps) {
                 </SheetDescription>
               </SheetHeader>
               <div className="space-y-6 text-left">
-                <div>
+                <div className="space-y-2">
                   <h3 className="font-semibold text-muted-foreground">Literal Translation</h3>
-                  <p className="text-lg">"{idiom.literalTranslation}"</p>
+                  <p className="text-lg italic">"{idiom.literalTranslation}"</p>
                 </div>
-                <div>
+                <Separator />
+                <div className="space-y-2">
                   <h3 className="font-semibold text-muted-foreground">Actual Meaning</h3>
                   <p className="text-lg">{idiom.actualMeaning}</p>
                 </div>
-                <div>
+                <Separator />
+                <div className="space-y-2">
                   <h3 className="font-semibold text-muted-foreground">Example (Vietnamese)</h3>
                   <p className="text-lg">{idiom.exampleVietnamese}</p>
                 </div>
-                <div>
+                <Separator />
+                <div className="space-y-2">
                   <h3 className="font-semibold text-muted-foreground">Example (English)</h3>
                   <p className="text-lg">{idiom.exampleEnglish}</p>
                 </div>
