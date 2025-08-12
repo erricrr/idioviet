@@ -5,7 +5,6 @@ export interface IdiomChunk {
 export interface Idiom {
   id: number;
   phrase: string;
-  dialect: 'Northern Vietnam' | 'Central Vietnam' | 'Southern Vietnam';
   chunks: IdiomChunk[];
   literalTranslation: string;
   actualMeaning: string;
@@ -17,7 +16,6 @@ export const idioms: Idiom[] = [
   {
     id: 1,
     phrase: 'Càng đông, càng vui',
-    dialect: 'Northern Vietnam',
     chunks: [
       { text: 'Càng đông,' },
       { text: 'càng vui' },
@@ -30,7 +28,6 @@ export const idioms: Idiom[] = [
   {
     id: 2,
     phrase: 'Cha nào con nấy',
-    dialect: 'Northern Vietnam',
     chunks: [
       { text: 'Cha nào' },
       { text: 'con nấy' },
@@ -43,7 +40,6 @@ export const idioms: Idiom[] = [
   {
     id: 3,
     phrase: 'Chó chê mèo lắm lông',
-    dialect: 'Northern Vietnam',
     chunks: [
       { text: 'Chó chê' },
       { text: 'mèo lắm lông' },
@@ -56,7 +52,6 @@ export const idioms: Idiom[] = [
   {
     id: 4,
     phrase: 'Chuyện bé xé ra to',
-    dialect: 'Northern Vietnam',
     chunks: [
       { text: 'Chuyện bé' },
       { text: 'xé ra to' },
@@ -69,7 +64,6 @@ export const idioms: Idiom[] = [
   {
     id: 5,
     phrase: 'Có công mài sắt, có ngày nên kim',
-    dialect: 'Northern Vietnam',
     chunks: [
       { text: 'Có công mài sắt,' },
       { text: 'có ngày nên kim' },
@@ -82,7 +76,6 @@ export const idioms: Idiom[] = [
   {
     id: 6,
     phrase: 'Có tiền mua tiên cũng được',
-    dialect: 'Northern Vietnam',
     chunks: [
       { text: 'Có tiền' },
       { text: 'mua tiên cũng được' },
@@ -95,7 +88,6 @@ export const idioms: Idiom[] = [
   {
     id: 7,
     phrase: 'Còn nước còn tát',
-    dialect: 'Northern Vietnam',
     chunks: [
       { text: 'Còn nước' },
       { text: 'còn tát' },
@@ -108,7 +100,6 @@ export const idioms: Idiom[] = [
   {
     id: 8,
     phrase: 'Cười người hôm trước, hôm sau người cười',
-    dialect: 'Northern Vietnam',
     chunks: [
       { text: 'Cười người hôm trước,' },
       { text: 'hôm sau người cười' },
@@ -121,7 +112,6 @@ export const idioms: Idiom[] = [
   {
     id: 9,
     phrase: 'Đầu bạc răng long',
-    dialect: 'Northern Vietnam',
     chunks: [
       { text: 'Đầu bạc' },
       { text: 'răng long' },
@@ -134,7 +124,6 @@ export const idioms: Idiom[] = [
   {
     id: 10,
     phrase: 'Đổ thêm dầu vào lửa',
-    dialect: 'Northern Vietnam',
     chunks: [
       { text: 'Đổ thêm dầu' },
       { text: 'vào lửa' },
@@ -147,7 +136,6 @@ export const idioms: Idiom[] = [
   {
     id: 11,
     phrase: 'Đứng núi này trông núi nọ',
-    dialect: 'Northern Vietnam',
     chunks: [
       { text: 'Đứng núi này' },
       { text: 'trông núi nọ' },
@@ -160,7 +148,6 @@ export const idioms: Idiom[] = [
   {
     id: 12,
     phrase: 'Đừng trông mặt mà bắt hình dong',
-    dialect: 'Northern Vietnam',
     chunks: [
       { text: 'Đừng trông mặt' },
       { text: 'mà bắt hình dong' },
@@ -173,7 +160,6 @@ export const idioms: Idiom[] = [
   {
     id: 13,
     phrase: 'Giọt nước tràn ly',
-    dialect: 'Northern Vietnam',
     chunks: [
       { text: 'Giọt nước' },
       { text: 'tràn ly' },
@@ -186,7 +172,6 @@ export const idioms: Idiom[] = [
   {
     id: 14,
     phrase: 'Gừng càng già càng cay',
-    dialect: 'Northern Vietnam',
     chunks: [
       { text: 'Gừng càng già' },
       { text: 'càng cay' },
@@ -199,7 +184,6 @@ export const idioms: Idiom[] = [
   {
     id: 15,
     phrase: 'Khỉ ho cò gáy',
-    dialect: 'Northern Vietnam',
     chunks: [
       { text: 'Khỉ ho' },
       { text: 'cò gáy' },
@@ -212,7 +196,6 @@ export const idioms: Idiom[] = [
   {
     id: 16,
     phrase: 'Mỗi cây mỗi hoa, mỗi nhà mỗi cảnh',
-    dialect: 'Northern Vietnam',
     chunks: [
       { text: 'Mỗi cây mỗi hoa,' },
       { text: 'mỗi nhà mỗi cảnh' },
@@ -225,7 +208,6 @@ export const idioms: Idiom[] = [
   {
     id: 17,
     phrase: 'Nhân vô thập toàn',
-    dialect: 'Northern Vietnam',
     chunks: [
       { text: 'Nhân vô' },
       { text: 'thập toàn' },
@@ -238,7 +220,6 @@ export const idioms: Idiom[] = [
   {
     id: 18,
     phrase: 'Nhập gia tùy tục',
-    dialect: 'Northern Vietnam',
     chunks: [
       { text: 'Nhập gia' },
       { text: 'tùy tục' },
@@ -251,7 +232,6 @@ export const idioms: Idiom[] = [
   {
     id: 19,
     phrase: 'Nước đổ đầu vịt',
-    dialect: 'Northern Vietnam',
     chunks: [
       { text: 'Nước đổ' },
       { text: 'đầu vịt' },
@@ -264,7 +244,6 @@ export const idioms: Idiom[] = [
   {
     id: 20,
     phrase: 'Ruột để ngoài da',
-    dialect: 'Northern Vietnam',
     chunks: [
       { text: 'Ruột để' },
       { text: 'ngoài da' },
@@ -277,7 +256,6 @@ export const idioms: Idiom[] = [
   {
     id: 21,
     phrase: 'Sau cơn mưa trời lại sáng',
-    dialect: 'Northern Vietnam',
     chunks: [
       { text: 'Sau cơn mưa' },
       { text: 'trời lại sáng' },
@@ -290,7 +268,6 @@ export const idioms: Idiom[] = [
   {
     id: 22,
     phrase: 'Thất bại là mẹ (của) thành công',
-    dialect: 'Northern Vietnam',
     chunks: [
       { text: 'Thất bại là mẹ' },
       { text: '(của) thành công' },
@@ -303,7 +280,6 @@ export const idioms: Idiom[] = [
   {
     id: 23,
     phrase: 'Trong cái rủi có cái may',
-    dialect: 'Northern Vietnam',
     chunks: [
       { text: 'Trong cái rủi' },
       { text: 'có cái may' },
@@ -316,7 +292,6 @@ export const idioms: Idiom[] = [
   {
     id: 24,
     phrase: 'Uống nước nhớ nguồn',
-    dialect: 'Northern Vietnam',
     chunks: [
       { text: 'Uống nước' },
       { text: 'nhớ nguồn' },
@@ -329,7 +304,6 @@ export const idioms: Idiom[] = [
   {
     id: 25,
     phrase: 'Xa mặt cách lòng',
-    dialect: 'Northern Vietnam',
     chunks: [
       { text: 'Xa mặt' },
       { text: 'cách lòng' },

@@ -4,7 +4,6 @@ import type { Idiom } from "@/data/idioms";
 import {
   Card,
   CardContent,
-  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
@@ -21,7 +20,6 @@ import {
   Mic,
   Square,
   Play,
-  Volume2,
   Info,
   LoaderCircle,
   Sparkles,
@@ -32,7 +30,6 @@ import { useEffect, useRef, useState } from "react";
 import { generateEncouragementMessage } from "@/ai/flows/generate-encouragement";
 import { useToast } from "@/hooks/use-toast";
 import { blobToBase64 } from "@/lib/utils";
-import { Skeleton } from "@/components/ui/skeleton";
 
 interface IdiomCardProps {
   idiom: Idiom;
@@ -101,12 +98,12 @@ export function IdiomCard({ idiom }: IdiomCardProps) {
     <Card className="w-full max-w-md mx-auto shadow-lg overflow-hidden flex flex-col">
       {userAudioUrl && <audio ref={audioRef} src={userAudioUrl} />}
       <CardHeader>
-        <CardTitle className="text-2xl font-bold text-center text-primary tracking-tight">
+        <CardTitle 
+          className="text-2xl font-bold text-center text-primary tracking-tight cursor-pointer hover:text-primary/80 transition-colors"
+          onClick={() => speak(idiom.phrase)}
+        >
           {idiom.phrase}
         </CardTitle>
-        <CardDescription className="text-center">
-          {idiom.dialect}
-        </CardDescription>
       </CardHeader>
       <CardContent className="flex-grow">
         <div className="text-center mb-6">
@@ -125,16 +122,7 @@ export function IdiomCard({ idiom }: IdiomCardProps) {
           </div>
         </div>
 
-        <div className="flex justify-center items-center gap-4 my-6">
-          <Button
-            size="lg"
-            variant="outline"
-            onClick={() => speak(idiom.phrase)}
-            aria-label="Play original audio"
-          >
-            <Volume2 className="w-6 h-6 mr-2" />
-            Original
-          </Button>
+        <div className="flex justify-center items-center gap-4 my-4">
           {!isRecording && (
             <Button
               size="lg"
@@ -161,7 +149,7 @@ export function IdiomCard({ idiom }: IdiomCardProps) {
         </div>
         
         {userAudioUrl && (
-          <div className="flex justify-center items-center gap-4 my-6">
+          <div className="flex justify-center items-center gap-4 my-4">
             <Button onClick={handlePlayUserAudio} variant="secondary">
               <Play className="mr-2 h-4 w-4" /> Your Attempt
             </Button>
