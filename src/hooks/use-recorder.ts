@@ -15,7 +15,12 @@ export const useRecorder = () => {
         
         try {
             const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-            mediaRecorderRef.current = new MediaRecorder(stream);
+            
+            // Prefer mp4 but fallback to default
+            const options = { mimeType: 'audio/mp4' };
+            const isSupported = MediaRecorder.isTypeSupported(options.mimeType);
+            
+            mediaRecorderRef.current = new MediaRecorder(stream, isSupported ? options : undefined);
             audioChunksRef.current = [];
 
             mediaRecorderRef.current.ondataavailable = event => {
@@ -23,7 +28,7 @@ export const useRecorder = () => {
             };
 
             mediaRecorderRef.current.onstop = () => {
-                const blob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
+                const blob = new Blob(audioChunksRef.current, { type: isSupported ? 'audio/mp4' : 'audio/webm' });
                 setAudioBlob(blob);
                 stream.getTracks().forEach(track => track.stop());
             };
