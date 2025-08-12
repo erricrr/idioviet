@@ -52,15 +52,13 @@ export function VietSpeakClient() {
                         view="carousel"
                     />
                 </TabsContent>
-                <TabsContent value="saved" className="flex-grow m-0 p-4 overflow-y-auto">
-                    <div className="w-full max-w-md mx-auto flex flex-col items-center gap-4">
-                        <SavedIdiomsList
-                            idioms={savedIdioms}
-                            savedIdiomIds={savedIdiomIds}
-                            onSaveToggle={toggleSaveIdiom}
-                            view="list"
-                        />
-                    </div>
+                <TabsContent value="saved" className="flex-grow m-0 p-4">
+                     <SavedIdiomsList
+                        idioms={savedIdioms}
+                        savedIdiomIds={savedIdiomIds}
+                        onSaveToggle={toggleSaveIdiom}
+                        view="list"
+                    />
                 </TabsContent>
             </Tabs>
         </div>
