@@ -1,3 +1,4 @@
+
 "use client";
 
 import type { Idiom } from "@/data/idioms";
@@ -13,6 +14,7 @@ import { Button } from "@/components/ui/button";
 import {
   Sheet,
   SheetContent,
+  SheetDescription,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
@@ -115,7 +117,7 @@ export function IdiomCard({ idiom, isSaved, onSaveToggle }: IdiomCardProps) {
           </div>
         </div>
 
-        <div className="flex justify-center items-center gap-4">
+        <div className="flex justify-center items-center gap-4 my-6">
           {!isRecording && (
             <Button
               size="lg"
@@ -149,7 +151,7 @@ export function IdiomCard({ idiom, isSaved, onSaveToggle }: IdiomCardProps) {
         </div>
       </CardContent>
 
-      <CardFooter className="p-0">
+      <CardFooter className="p-0 mt-auto">
         <Sheet>
           <SheetTrigger asChild>
             <Button variant="ghost" className="w-full rounded-t-none">
@@ -158,29 +160,31 @@ export function IdiomCard({ idiom, isSaved, onSaveToggle }: IdiomCardProps) {
             </Button>
           </SheetTrigger>
           <SheetContent side="bottom" className="rounded-t-lg">
-            <ScrollArea className="h-[80vh] w-full p-6 touch-pan-y">
-              <SheetHeader className="text-left mb-6">
-                <SheetTitle className="text-2xl text-primary">{idiom.phrase}</SheetTitle>
-              </SheetHeader>
-              <div className="space-y-6 text-left">
-                <div className="space-y-2">
-                  <h3 className="font-semibold text-muted-foreground">Literal Translation</h3>
-                  <p className="text-lg italic">"{idiom.literalTranslation}"</p>
-                </div>
-                <Separator />
-                <div className="space-y-2">
-                  <h3 className="font-semibold text-muted-foreground">Actual Meaning</h3>
-                  <p className="text-lg">{idiom.actualMeaning}</p>
-                </div>
-                <Separator />
-                <div className="space-y-2">
-                  <h3 className="font-semibold text-muted-foreground">Example (Vietnamese)</h3>
-                  <p className="text-lg">{idiom.exampleVietnamese}</p>
-                </div>
-                <Separator />
-                <div className="space-y-2">
-                  <h3 className="font-semibold text-muted-foreground">Example (English)</h3>
-                  <p className="text-lg">{idiom.exampleEnglish}</p>
+            <ScrollArea className="h-[80vh] w-full touch-pan-y">
+              <div className="p-6">
+                <SheetHeader className="text-left mb-6">
+                  <SheetTitle className="text-2xl text-primary">{idiom.phrase}</SheetTitle>
+                </SheetHeader>
+                <div className="space-y-6 text-left">
+                  <div className="space-y-2">
+                    <h3 className="font-semibold text-muted-foreground">Literal Translation</h3>
+                    <p className="text-lg italic">"{idiom.literalTranslation}"</p>
+                  </div>
+                  <Separator />
+                  <div className="space-y-2">
+                    <h3 className="font-semibold text-muted-foreground">Actual Meaning</h3>
+                    <p className="text-lg">{idiom.actualMeaning}</p>
+                  </div>
+                  <Separator />
+                  <div className="space-y-2">
+                    <h3 className="font-semibold text-muted-foreground">Example (Vietnamese)</h3>
+                    <p className="text-lg">{idiom.exampleVietnamese}</p>
+                  </div>
+                  <Separator />
+                  <div className="space-y-2">
+                    <h3 className="font-semibold text-muted-foreground">Example (English)</h3>
+                    <p className="text-lg">{idiom.exampleEnglish}</p>
+                  </div>
                 </div>
               </div>
             </ScrollArea>
