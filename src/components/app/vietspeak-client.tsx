@@ -52,8 +52,8 @@ export function VietSpeakClient() {
                         view="carousel"
                     />
                 </TabsContent>
-                <TabsContent value="saved" className="flex-grow m-0 p-4 overflow-hidden">
-                    <div className="w-full max-w-md mx-auto flex flex-col gap-4">
+                <TabsContent value="saved" className="flex-grow m-0 p-4 overflow-y-auto">
+                    <div className="w-full max-w-md mx-auto flex flex-col items-center gap-4">
                         <SavedIdiomsList
                             idioms={savedIdioms}
                             savedIdiomIds={savedIdiomIds}

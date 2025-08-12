@@ -79,33 +79,33 @@ export function SavedIdiomsList({
   
   return (
     <>
-      <Dialog>
-        <DialogTrigger asChild>
-          <Button>Review All Saved</Button>
-        </DialogTrigger>
-        <DialogContent className="max-w-[90vw] w-full md:max-w-lg p-4 border-none bg-transparent shadow-none">
-          <DialogHeader>
-            <DialogTitle className="sr-only">Review All Saved Idioms</DialogTitle>
-          </DialogHeader>
-            <Carousel className="w-full" opts={{ loop: true }}>
-                <CarouselContent>
-                {idioms.map((idiom) => (
-                    <CarouselItem key={idiom.id}>
-                    <div className="p-1">
-                        <IdiomCard
-                        idiom={idiom}
-                        isSaved={savedIdiomIds.has(idiom.id)}
-                        onSaveToggle={onSaveToggle}
-                        />
-                    </div>
-                    </CarouselItem>
-                ))}
-                </CarouselContent>
-                <CarouselPrevious className="ml-[-8px] md:ml-[-24px]" />
-                <CarouselNext className="mr-[-8px] md:mr-[-24px]" />
-            </Carousel>
-        </DialogContent>
-      </Dialog>
+        <Dialog>
+          <DialogTrigger asChild>
+            <Button>Review All Saved</Button>
+          </DialogTrigger>
+          <DialogContent className="max-w-[90vw] w-full md:max-w-lg p-4 border-none bg-transparent shadow-none">
+            <DialogHeader>
+              <DialogTitle className="sr-only">Review All Saved Idioms</DialogTitle>
+            </DialogHeader>
+              <Carousel className="w-full" opts={{ loop: true }}>
+                  <CarouselContent>
+                  {idioms.map((idiom) => (
+                      <CarouselItem key={idiom.id}>
+                      <div className="p-1">
+                          <IdiomCard
+                          idiom={idiom}
+                          isSaved={savedIdiomIds.has(idiom.id)}
+                          onSaveToggle={onSaveToggle}
+                          />
+                      </div>
+                      </CarouselItem>
+                  ))}
+                  </CarouselContent>
+                  <CarouselPrevious className="ml-[-8px] md:ml-[-24px]" />
+                  <CarouselNext className="mr-[-8px] md:mr-[-24px]" />
+              </Carousel>
+          </DialogContent>
+        </Dialog>
       
       <Card className="w-full max-w-md mx-auto border-none">
         <CardContent className="p-2">
