@@ -43,6 +43,22 @@ export function IdiomCard({ idiom, isSaved, onSaveToggle }: IdiomCardProps) {
   const { isRecording, audioBlob, startRecording, stopRecording } = useRecorder();
   const [userAudioUrl, setUserAudioUrl] = useState<string | null>(null);
   const audioRef = useRef<HTMLAudioElement>(null);
+  const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.speechSynthesis) {
+      const loadVoices = () => {
+        setVoices(window.speechSynthesis.getVoices());
+      };
+      
+      loadVoices();
+      window.speechSynthesis.onvoiceschanged = loadVoices;
+
+      return () => {
+        window.speechSynthesis.onvoiceschanged = null;
+      };
+    }
+  }, []);
 
   useEffect(() => {
     if (audioBlob) {
@@ -56,6 +72,15 @@ export function IdiomCard({ idiom, isSaved, onSaveToggle }: IdiomCardProps) {
     if (typeof window !== "undefined" && window.speechSynthesis) {
       const utterance = new SpeechSynthesisUtterance(text);
       utterance.lang = "vi-VN";
+      
+      const vietnameseVoice = voices.find(
+        (voice) => voice.lang === 'vi-VN' && (voice.name.includes('Linh') || voice.name.includes('Northern'))
+      ) || voices.find(voice => voice.lang === 'vi-VN');
+
+      if (vietnameseVoice) {
+        utterance.voice = vietnameseVoice;
+      }
+      
       utterance.rate = 0.8;
       window.speechSynthesis.cancel();
       window.speechSynthesis.speak(utterance);
