@@ -85,6 +85,8 @@ export function VietSpeakClient() {
                 onSelectIdiom={handleSelectIdiomFromList}
                 isSheetOpen={isSavedListOpen}
                 onSheetOpenChange={setIsSavedListOpen}
+                savedIdiomIds={savedIdiomIds}
+                onSaveToggle={toggleSaveIdiom}
             />
         </div>
     )
