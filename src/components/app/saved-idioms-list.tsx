@@ -19,7 +19,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { ScrollArea } from "../ui/scroll-area";
 import { Bookmark, Eye } from "lucide-react";
 
@@ -81,7 +81,7 @@ export function SavedIdiomsList({
     <>
       <Dialog>
         <DialogTrigger asChild>
-          <Button className="w-full max-w-md mx-auto mb-4">Review All Saved</Button>
+          <Button>Review All Saved</Button>
         </DialogTrigger>
         <DialogContent className="max-w-[90vw] w-full md:max-w-lg p-4 border-none bg-transparent shadow-none">
           <DialogHeader>
@@ -108,10 +108,7 @@ export function SavedIdiomsList({
       </Dialog>
       
       <Card className="w-full max-w-md mx-auto border-none">
-        <CardHeader>
-          <CardTitle>Your Saved Idioms</CardTitle>
-        </CardHeader>
-        <CardContent>
+        <CardContent className="p-2">
           <ScrollArea className="h-[calc(100vh-280px)]">
             <div className="flex flex-col gap-2">
               {idioms.map((idiom) => (

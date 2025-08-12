@@ -43,8 +43,9 @@ export function VietSpeakClient() {
                         <TabsTrigger value="saved">Saved</TabsTrigger>
                     </TabsList>
                 </div>
+
                 <TabsContent value="all" className="flex-grow m-0 flex items-center justify-center p-4">
-                     <SavedIdiomsList
+                    <SavedIdiomsList
                         idioms={allIdioms}
                         savedIdiomIds={savedIdiomIds}
                         onSaveToggle={toggleSaveIdiom}
@@ -52,12 +53,14 @@ export function VietSpeakClient() {
                     />
                 </TabsContent>
                 <TabsContent value="saved" className="flex-grow m-0 p-4 overflow-hidden">
-                    <SavedIdiomsList
-                        idioms={savedIdioms}
-                        savedIdiomIds={savedIdiomIds}
-                        onSaveToggle={toggleSaveIdiom}
-                        view="list"
-                    />
+                    <div className="w-full max-w-md mx-auto flex flex-col gap-4">
+                        <SavedIdiomsList
+                            idioms={savedIdioms}
+                            savedIdiomIds={savedIdiomIds}
+                            onSaveToggle={toggleSaveIdiom}
+                            view="list"
+                        />
+                    </div>
                 </TabsContent>
             </Tabs>
         </div>
