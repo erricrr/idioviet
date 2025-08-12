@@ -11,11 +11,13 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 import {
   Mic,
   Square,
@@ -25,6 +27,7 @@ import {
 import { useRecorder } from "@/hooks/use-recorder";
 import { useEffect, useRef, useState } from "react";
 import { useToast } from "@/hooks/use-toast";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface IdiomCardProps {
   idiom: Idiom;
@@ -72,7 +75,7 @@ export function IdiomCard({ idiom }: IdiomCardProps) {
   }
 
   return (
-    <Card className="w-full max-w-md mx-auto shadow-lg flex flex-col h-full">
+    <Card className="w-full max-w-md mx-auto shadow-lg flex flex-col h-full touch-none">
       {userAudioUrl && <audio ref={audioRef} src={userAudioUrl} />}
       <CardHeader>
         <CardTitle 
@@ -83,91 +86,95 @@ export function IdiomCard({ idiom }: IdiomCardProps) {
         </CardTitle>
       </CardHeader>
       
-      <div className="flex-grow flex flex-col min-h-0">
-        <CardContent className="p-6 pt-0">
-          <div className="text-center mb-6">
-            <p className="font-semibold text-lg">Practice in chunks:</p>
-            <div className="flex flex-wrap justify-center gap-2 mt-2">
-              {idiom.chunks.map((chunk, index) => (
-                <Badge
-                  key={index}
-                  variant="secondary"
-                  className="text-lg px-4 py-2 cursor-pointer hover:bg-primary/20 transition-colors"
-                  onClick={() => speak(chunk.text)}
-                >
-                  {chunk.text}
-                </Badge>
-              ))}
-            </div>
-          </div>
-
-          <div className="flex justify-center items-center gap-4 my-6">
-            {!isRecording && (
-              <Button
-                size="lg"
-                className="bg-accent hover:bg-accent/90 text-accent-foreground"
-                onClick={userAudioUrl ? handleRerecord : startRecording}
-                aria-label={userAudioUrl ? "Re-record" : "Start recording"}
+      <CardContent className="p-6 pt-0 flex-grow flex flex-col">
+        <div className="text-center mb-6">
+          <p className="font-semibold text-lg">Practice in chunks:</p>
+          <div className="flex flex-wrap justify-center gap-2 mt-2">
+            {idiom.chunks.map((chunk, index) => (
+              <Badge
+                key={index}
+                variant="secondary"
+                className="text-lg px-4 py-2 cursor-pointer hover:bg-primary/20 transition-colors"
+                onClick={() => speak(chunk.text)}
               >
-                <Mic className="w-6 h-6 mr-2" />
-                {userAudioUrl ? 'Re-record' : 'Record'}
-              </Button>
-            )}
-
-            {isRecording && (
-              <Button
-                size="lg"
-                variant="destructive"
-                onClick={stopRecording}
-                className="animate-pulse"
-                aria-label="Stop recording"
-              >
-                <Square className="w-6 h-6 mr-2" />
-                Stop
-              </Button>
-            )}
-
-            {userAudioUrl && !isRecording && (
-              <Button onClick={handlePlayUserAudio} variant="secondary" size="lg">
-                <Play className="mr-2 h-5 w-5" /> Your Attempt
-              </Button>
-            )}
+                {chunk.text}
+              </Badge>
+            ))}
           </div>
-        </CardContent>
+        </div>
 
-        <CardFooter className="p-0 flex-grow min-h-0">
-            <Accordion type="single" collapsible className="w-full border-t">
-              <AccordionItem value="item-1" className="border-b-0">
-                <AccordionTrigger className="px-6 py-4 text-base font-semibold">
-                  <Info className="w-5 h-5 mr-3 text-primary" />
-                  Details & Meaning
-                </AccordionTrigger>
-                <AccordionContent>
-                  <div className="px-6 pb-6 text-base max-h-[30vh] overflow-y-auto touch-pan-y">
-                    <div className="space-y-4 pr-4">
-                      <div>
-                        <p className="font-semibold text-muted-foreground">Literal Translation</p>
-                        <p>"{idiom.literalTranslation}"</p>
-                      </div>
-                      <div>
-                        <p className="font-semibold text-muted-foreground">Actual Meaning</p>
-                        <p>{idiom.actualMeaning}</p>
-                      </div>
-                      <div>
-                        <p className="font-semibold text-muted-foreground">Example (Vietnamese)</p>
-                        <p>{idiom.exampleVietnamese}</p>
-                      </div>
-                      <div>
-                        <p className="font-semibold text-muted-foreground">Example (English)</p>
-                        <p>{idiom.exampleEnglish}</p>
-                      </div>
-                    </div>
-                  </div>
-                </AccordionContent>
-              </AccordionItem>
-            </Accordion>
-        </CardFooter>
-      </div>
+        <div className="flex justify-center items-center gap-4 my-6">
+          {!isRecording && (
+            <Button
+              size="lg"
+              className="bg-accent hover:bg-accent/90 text-accent-foreground"
+              onClick={userAudioUrl ? handleRerecord : startRecording}
+              aria-label={userAudioUrl ? "Re-record" : "Start recording"}
+            >
+              <Mic className="w-6 h-6 mr-2" />
+              {userAudioUrl ? 'Re-record' : 'Record'}
+            </Button>
+          )}
+
+          {isRecording && (
+            <Button
+              size="lg"
+              variant="destructive"
+              onClick={stopRecording}
+              className="animate-pulse"
+              aria-label="Stop recording"
+            >
+              <Square className="w-6 h-6 mr-2" />
+              Stop
+            </Button>
+          )}
+
+          {userAudioUrl && !isRecording && (
+            <Button onClick={handlePlayUserAudio} variant="secondary" size="lg">
+              <Play className="mr-2 h-5 w-5" /> Your Attempt
+            </Button>
+          )}
+        </div>
+      </CardContent>
+
+      <CardFooter className="p-4 border-t">
+        <Sheet>
+          <SheetTrigger asChild>
+            <Button variant="outline" className="w-full">
+              <Info className="w-5 h-5 mr-2" />
+              Details & Meaning
+            </Button>
+          </SheetTrigger>
+          <SheetContent side="bottom" className="rounded-t-lg">
+            <ScrollArea className="h-[80vh] w-full p-6">
+              <SheetHeader className="text-left mb-6">
+                <SheetTitle className="text-2xl text-primary">{idiom.phrase}</SheetTitle>
+                <SheetDescription>
+                  Dive deeper into the meaning and usage of this idiom.
+                </SheetDescription>
+              </SheetHeader>
+              <div className="space-y-6 text-left">
+                <div>
+                  <h3 className="font-semibold text-muted-foreground">Literal Translation</h3>
+                  <p className="text-lg">"{idiom.literalTranslation}"</p>
+                </div>
+                <div>
+                  <h3 className="font-semibold text-muted-foreground">Actual Meaning</h3>
+                  <p className="text-lg">{idiom.actualMeaning}</p>
+                </div>
+                <div>
+                  <h3 className="font-semibold text-muted-foreground">Example (Vietnamese)</h3>
+                  <p className="text-lg">{idiom.exampleVietnamese}</p>
+                </div>
+                <div>
+                  <h3 className="font-semibold text-muted-foreground">Example (English)</h3>
+                  <p className="text-lg">{idiom.exampleEnglish}</p>
+                </div>
+              </div>
+            </ScrollArea>
+          </SheetContent>
+        </Sheet>
+      </CardFooter>
     </Card>
   );
 }
