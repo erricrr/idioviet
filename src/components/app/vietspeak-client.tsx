@@ -16,6 +16,7 @@ import {
 import { IdiomCard } from "./idiom-card";
 import { Button } from "../ui/button";
 import { X } from "lucide-react";
+import { Progress } from "@/components/ui/progress";
 
 const SAVED_IDIOMS_KEY = 'vietSpeakSavedIdioms';
 
@@ -24,6 +25,7 @@ export function VietSpeakClient() {
     const [isSavedListOpen, setIsSavedListOpen] = useState(false);
     const [carouselApi, setCarouselApi] = useState<CarouselApi | null>(null);
     const [isReviewingSaved, setIsReviewingSaved] = useState(false);
+    const [progress, setProgress] = useState(0);
     const carouselRef = useRef(null);
 
     useEffect(() => {
@@ -32,6 +34,26 @@ export function VietSpeakClient() {
             setSavedIdiomIds(new Set(JSON.parse(saved)));
         }
     }, []);
+
+    useEffect(() => {
+        if (!carouselApi) {
+            return;
+        }
+
+        const handleSelect = () => {
+            const current = carouselApi.selectedScrollSnap();
+            const count = carouselApi.scrollSnapList().length;
+            const newProgress = ((current + 1) / count) * 100;
+            setProgress(newProgress);
+        };
+    
+        handleSelect(); // Set initial progress
+        carouselApi.on("select", handleSelect);
+    
+        return () => {
+          carouselApi.off("select", handleSelect);
+        };
+    }, [carouselApi]);
 
     const toggleSaveIdiom = (id: number) => {
         const newSavedIds = new Set(savedIdiomIds);
@@ -79,8 +101,11 @@ export function VietSpeakClient() {
     return (
         <div className="flex flex-col h-full">
             <Header onSavedListClick={() => setIsSavedListOpen(true)} savedCount={savedIdioms.length} />
+            <div className="px-4 pb-2">
+                <Progress value={progress} className="w-full" />
+            </div>
             
-            <div className="flex-grow flex items-center justify-center p-4 relative">
+            <div className="flex-grow flex items-center justify-center p-4 pt-2 relative">
                 {isReviewingSaved && (
                     <Button 
                         onClick={handleExitReview}
