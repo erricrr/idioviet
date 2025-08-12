@@ -13,7 +13,6 @@ import { Button } from "@/components/ui/button";
 import {
   Sheet,
   SheetContent,
-  SheetDescription,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
@@ -150,9 +149,6 @@ export function IdiomCard({ idiom }: IdiomCardProps) {
             <ScrollArea className="h-[80vh] w-full p-6 touch-pan-y">
               <SheetHeader className="text-left mb-6">
                 <SheetTitle className="text-2xl text-primary">{idiom.phrase}</SheetTitle>
-                <SheetDescription>
-                  Dive deeper into the meaning and usage of this idiom.
-                </SheetDescription>
               </SheetHeader>
               <div className="space-y-6 text-left">
                 <div className="space-y-2">
