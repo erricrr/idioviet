@@ -11,7 +11,10 @@ export function Header({ onSavedListClick, savedCount }: HeaderProps) {
   return (
     <header className="p-4 flex items-center justify-between shrink-0">
       <div className="flex items-center">
-        <Star className="w-7 h-7 text-primary" fill="currentColor" />
+        <div className="relative w-8 h-8 flex items-center justify-center">
+          <div className="absolute w-8 h-8 bg-accent rounded-full"></div>
+          <Star className="relative w-7 h-7 text-primary" fill="currentColor" />
+        </div>
         <h1 className="text-3xl font-bold text-primary ml-2 tracking-tight">idioViet</h1>
       </div>
       <div className="relative">
