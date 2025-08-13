@@ -25,6 +25,7 @@ import {
   Play,
   Info,
   Bookmark,
+  RotateCcw,
 } from "lucide-react";
 import { useRecorder } from "@/hooks/use-recorder";
 import { useEffect, useRef, useState } from "react";
@@ -143,34 +144,44 @@ export function IdiomCard({ idiom, isSaved, onSaveToggle }: IdiomCardProps) {
         </div>
 
         <div className="flex justify-center items-center gap-4 my-6">
-          {!isRecording && (
-            <Button
-              size="lg"
-              className="bg-accent hover:bg-accent/90 text-accent-foreground"
-              onClick={userAudioUrl ? handleRerecord : startRecording}
-              aria-label={userAudioUrl ? "Re-record" : "Start recording"}
-            >
-              <Mic className="w-6 h-6 mr-2" />
-              {userAudioUrl ? 'Re-record' : 'Record'}
-            </Button>
-          )}
-
           {isRecording && (
             <Button
-              size="lg"
+              size="icon"
               variant="destructive"
               onClick={stopRecording}
               aria-label="Stop recording"
+              className="w-16 h-16 rounded-full"
             >
-              <Square className="w-6 h-6 mr-2" />
-              Stop
+              <Square className="w-8 h-8" />
+            </Button>
+          )}
+
+          {!isRecording && !userAudioUrl && (
+            <Button
+              size="icon"
+              className="bg-accent hover:bg-accent/90 text-accent-foreground w-16 h-16 rounded-full"
+              onClick={startRecording}
+              aria-label="Start recording"
+            >
+              <Mic className="w-8 h-8" />
             </Button>
           )}
 
           {userAudioUrl && !isRecording && (
-            <Button onClick={handlePlayUserAudio} variant="secondary" size="lg">
-              <Play className="mr-2 h-5 w-5" /> Your Attempt
-            </Button>
+             <div className="flex items-center justify-center gap-2">
+                <Button onClick={handlePlayUserAudio} variant="secondary" size="lg" className="flex-grow">
+                    <Play className="mr-2 h-5 w-5" /> Your Attempt
+                </Button>
+                <Button 
+                    onClick={handleRerecord} 
+                    variant="outline" 
+                    size="icon"
+                    aria-label="Re-record"
+                    className="shrink-0"
+                >
+                    <RotateCcw className="h-5 w-5" />
+                </Button>
+            </div>
           )}
         </div>
       </CardContent>
