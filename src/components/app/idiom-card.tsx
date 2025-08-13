@@ -26,8 +26,6 @@ import {
   Play,
   Info,
   Bookmark,
-  RotateCcw,
-  X,
 } from "lucide-react";
 import { useRecorder } from "@/hooks/use-recorder";
 import { useEffect, useRef, useState } from "react";
@@ -45,6 +43,7 @@ export function IdiomCard({ idiom, isSaved, onSaveToggle }: IdiomCardProps) {
   const { toast } = useToast();
   const { isRecording, audioBlob, startRecording, stopRecording } = useRecorder();
   const [userAudioUrl, setUserAudioUrl] = useState<string | null>(null);
+  const [isReRecording, setIsReRecording] = useState(false);
   const audioRef = useRef<HTMLAudioElement>(null);
   const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);
 
@@ -67,6 +66,7 @@ export function IdiomCard({ idiom, isSaved, onSaveToggle }: IdiomCardProps) {
     if (audioBlob) {
       const url = URL.createObjectURL(audioBlob);
       setUserAudioUrl(url);
+      setIsReRecording(false);
       return () => URL.revokeObjectURL(url);
     }
   }, [audioBlob]);
@@ -103,9 +103,18 @@ export function IdiomCard({ idiom, isSaved, onSaveToggle }: IdiomCardProps) {
   };
 
   const handleRerecord = () => {
-    setUserAudioUrl(null);
+    setIsReRecording(true);
     startRecording();
   }
+
+  const handleStopRerecord = () => {
+    stopRecording();
+  }
+  
+  const showInitialRecordButton = !isRecording && !userAudioUrl;
+  const showLargeStopButton = isRecording && !isReRecording;
+  const showPlaybackControls = userAudioUrl && !isRecording;
+  const showReRecordingControls = userAudioUrl && isRecording && isReRecording;
 
   return (
     <Card className="w-full max-w-md mx-auto shadow-lg flex flex-col border-none">
@@ -145,8 +154,19 @@ export function IdiomCard({ idiom, isSaved, onSaveToggle }: IdiomCardProps) {
           </div>
         </div>
 
-        <div className="flex justify-center items-center gap-4 my-6">
-          {isRecording && (
+        <div className="flex justify-center items-center gap-4 my-6 h-20">
+          {showInitialRecordButton && (
+            <Button
+              size="icon"
+              className="bg-accent hover:bg-accent/90 text-accent-foreground w-20 h-20 rounded-full"
+              onClick={startRecording}
+              aria-label="Start recording"
+            >
+              <Mic style={{ width: '40px', height: '40px' }} />
+            </Button>
+          )}
+
+          {showLargeStopButton && (
             <Button
               size="icon"
               variant="destructive"
@@ -158,18 +178,7 @@ export function IdiomCard({ idiom, isSaved, onSaveToggle }: IdiomCardProps) {
             </Button>
           )}
 
-          {!isRecording && !userAudioUrl && (
-            <Button
-              size="icon"
-              className="bg-accent hover:bg-accent/90 text-accent-foreground w-20 h-20 rounded-full"
-              onClick={startRecording}
-              aria-label="Start recording"
-            >
-          <Mic style={{ width: '40px', height: '40px' }} />
-          </Button>
-          )}
-
-          {userAudioUrl && !isRecording && (
+          {showPlaybackControls && (
              <div className="flex items-center justify-center gap-2">
                 <Button onClick={handlePlayUserAudio} variant="secondary" size="lg" className="flex-grow">
                     <Play className="mr-2 h-8 w-8" /> Your Attempt
@@ -182,6 +191,23 @@ export function IdiomCard({ idiom, isSaved, onSaveToggle }: IdiomCardProps) {
                     className="shrink-0 h-12 w-12"
                 >
                     <Mic className="h-8 w-8" />
+                </Button>
+            </div>
+          )}
+
+          {showReRecordingControls && (
+             <div className="flex items-center justify-center gap-2">
+                <Button variant="secondary" size="lg" className="flex-grow" disabled>
+                    <Play className="mr-2 h-8 w-8" /> Your Attempt
+                </Button>
+                <Button 
+                    onClick={handleStopRerecord} 
+                    variant="destructive" 
+                    size="icon"
+                    aria-label="Stop re-recording"
+                    className="shrink-0 h-12 w-12"
+                >
+                    <Square className="h-8 w-8" />
                 </Button>
             </div>
           )}
