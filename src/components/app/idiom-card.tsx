@@ -170,16 +170,16 @@ export function IdiomCard({ idiom, isSaved, onSaveToggle }: IdiomCardProps) {
           {userAudioUrl && !isRecording && (
              <div className="flex items-center justify-center gap-2">
                 <Button onClick={handlePlayUserAudio} variant="secondary" size="lg" className="flex-grow">
-                    <Play className="mr-2 h-5 w-5" /> Your Attempt
+                    <Play className="mr-2 h-6 w-6" /> Your Attempt
                 </Button>
                 <Button 
                     onClick={handleRerecord} 
                     variant="outline" 
                     size="icon"
                     aria-label="Re-record"
-                    className="shrink-0"
+                    className="shrink-0 h-11 w-11"
                 >
-                    <RotateCcw className="h-5 w-5" />
+                    <RotateCcw className="h-6 w-6" />
                 </Button>
             </div>
           )}
