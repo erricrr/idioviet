@@ -76,9 +76,18 @@ body {
 
 @layer utilities {
   .recording-progress {
-    @apply absolute top-0 left-0 h-full bg-red-500/50;
+    @apply absolute top-0 left-0 h-full w-0 bg-destructive-foreground/20;
     transition-property: width;
     transition-timing-function: linear;
     transition-duration: 7000ms;
+  }
+
+  @keyframes recording-fill {
+    from { width: 0%; }
+    to { width: 100%; }
+  }
+
+  .recording-progress-animate {
+    /* no-op: superseded by width transition */
   }
 }

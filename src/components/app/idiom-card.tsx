@@ -56,7 +56,7 @@ export function IdiomCard({ idiom, isSaved, onSaveToggle }: IdiomCardProps) {
       const loadVoices = () => {
         setVoices(window.speechSynthesis.getVoices());
       };
-      
+
       loadVoices();
       window.speechSynthesis.onvoiceschanged = loadVoices;
 
@@ -75,7 +75,7 @@ export function IdiomCard({ idiom, isSaved, onSaveToggle }: IdiomCardProps) {
       setUserAudioUrl(null);
     }
   }, [audioBlob]);
-  
+
 
   useEffect(() => {
     // When isRecording becomes true, trigger the animation
@@ -100,6 +100,7 @@ export function IdiomCard({ idiom, isSaved, onSaveToggle }: IdiomCardProps) {
   const handleStartRecording = () => {
     setRecordingAttempted(false);
     setUserAudioUrl(null);
+    setIsAnimatingProgress(false);
     startRecording();
     recordingTimerRef.current = setTimeout(handleStopRecording, MAX_RECORDING_TIME_MS);
   };
@@ -118,7 +119,7 @@ export function IdiomCard({ idiom, isSaved, onSaveToggle }: IdiomCardProps) {
     if (typeof window !== "undefined" && window.speechSynthesis) {
       const utterance = new SpeechSynthesisUtterance(text);
       utterance.lang = "vi-VN";
-      
+
       const vietnameseVoice = voices.find(
         (voice) => voice.lang === 'vi-VN' && (voice.name.includes('Linh') || voice.name.includes('Northern'))
       ) || voices.find(voice => voice.lang === 'vi-VN');
@@ -126,7 +127,7 @@ export function IdiomCard({ idiom, isSaved, onSaveToggle }: IdiomCardProps) {
       if (vietnameseVoice) {
         utterance.voice = vietnameseVoice;
       }
-      
+
       utterance.rate = 0.8;
       window.speechSynthesis.cancel();
       window.speechSynthesis.speak(utterance);
@@ -160,16 +161,16 @@ export function IdiomCard({ idiom, isSaved, onSaveToggle }: IdiomCardProps) {
         >
             <Bookmark className={`w-6 h-6 ${isSaved ? 'fill-primary text-primary' : 'text-primary'}`} />
         </Button>
-        <CardTitle 
+        <CardTitle
           className="text-2xl font-bold text-center text-primary tracking-tight cursor-pointer hover:text-primary/80 transition-colors pt-8 flex items-center justify-center gap-2"
           onClick={() => speak(idiom.phrase)}
         >
           {idiom.phrase}
         </CardTitle>
       </CardHeader>
-      
+
       <CardContent className="p-6 pt-0 flex flex-col">
-        <div className="text-center mb-6">
+        <div className="text-center mb-4">
           <p className="font-semibold text-lg">Practice in chunks:</p>
           <div className="flex flex-wrap justify-center gap-2 mt-2">
             {idiom.chunks.map((chunk, index) => (
@@ -184,10 +185,10 @@ export function IdiomCard({ idiom, isSaved, onSaveToggle }: IdiomCardProps) {
             ))}
           </div>
         </div>
-        
-        <div className="flex flex-col justify-center items-center gap-4 my-6 min-h-[140px]">
+
+        <div className="flex flex-col justify-end items-center gap-2 my-3 h-[110px]">
             {!isRecording && !recordingAttempted && (
-                <div className="w-full data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0">
+                <div className="w-full px-10 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0">
                     <Button onClick={handleStartRecording} variant="destructive" size="lg" className="h-14 w-full">
                         <Mic className="h-6 w-6 mr-2" /> Record
                     </Button>
@@ -195,18 +196,18 @@ export function IdiomCard({ idiom, isSaved, onSaveToggle }: IdiomCardProps) {
             )}
 
             {isRecording && (
-                <div className="w-full data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0">
+                <div className="w-full px-10 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0">
                     <Button onClick={handleStopRecording} variant="destructive" size="lg" className="h-14 w-full relative overflow-hidden">
-                        <div className={cn("recording-progress", isAnimatingProgress && "w-full")} />
+                        <div className={cn("recording-progress")} style={{ width: isAnimatingProgress ? "100%" : 0, transitionDuration: `${MAX_RECORDING_TIME_MS}ms` }} />
                         <div className="relative z-10 flex items-center">
                             <Square className="w-6 h-6 mr-2" /> Stop
                         </div>
                     </Button>
                 </div>
             )}
-            
+
             {!isRecording && recordingAttempted && (
-                <div className="flex flex-col items-stretch justify-center gap-2 w-full data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0">
+                <div className="flex flex-col items-stretch justify-center gap-2 w-full px-10 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0">
                     <Button onClick={handlePlayUserAudio} variant="default" size="lg" className="flex-grow h-14 w-full" disabled={!hasRecording}>
                         <Play className="mr-2 h-6 w-6" /> Play Your Attempt
                     </Button>
