@@ -227,7 +227,7 @@ const CarouselPrevious = React.forwardRef<
       variant={variant}
       size={size}
       className={cn(
-        "absolute h-11 w-11 rounded-full z-20 left-2 top-1/2 -translate-y-1/2 active:!-translate-y-1/2 touch-none select-none",
+          "absolute h-11 w-11 rounded-full z-20 left-2 top-1/2 -translate-y-1/2 active:!-translate-y-1/2 touch-none select-none carousel-arrow-fix",
         className
       )}
       disabled={!canScrollPrev}
@@ -274,7 +274,7 @@ const CarouselNext = React.forwardRef<
       variant={variant}
       size={size}
       className={cn(
-        "absolute h-11 w-11 rounded-full z-20 right-2 top-1/2 -translate-y-1/2 active:!-translate-y-1/2 touch-none select-none",
+          "absolute h-11 w-11 rounded-full z-20 right-2 top-1/2 -translate-y-1/2 active:!-translate-y-1/2 touch-none select-none carousel-arrow-fix",
         className
       )}
       disabled={!canScrollNext}

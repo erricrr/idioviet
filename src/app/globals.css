@@ -90,4 +90,16 @@ body {
   .recording-progress-animate {
     /* no-op: superseded by width transition */
   }
+
+  /* Disable sticky hover on touch devices and only show pressed color during touch for carousel arrows */
+  @media (hover: none) {
+    .carousel-arrow-fix:hover {
+      background-color: hsl(var(--background)) !important;
+      color: inherit !important;
+    }
+    .carousel-arrow-fix:active {
+      background-color: hsl(var(--accent)) !important;
+      color: hsl(var(--accent-foreground)) !important;
+    }
+  }
 }
