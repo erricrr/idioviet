@@ -45,6 +45,7 @@ export function IdiomCard({ idiom, isSaved, onSaveToggle }: IdiomCardProps) {
   const { toast } = useToast();
   const { isRecording, audioBlob, startRecording, stopRecording } = useRecorder();
   const [userAudioUrl, setUserAudioUrl] = useState<string | null>(null);
+  const [recordingAttempted, setRecordingAttempted] = useState(false);
   const audioRef = useRef<HTMLAudioElement>(null);
   const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);
   const recordingTimerRef = useRef<NodeJS.Timeout | null>(null);
@@ -70,15 +71,11 @@ export function IdiomCard({ idiom, isSaved, onSaveToggle }: IdiomCardProps) {
       const url = URL.createObjectURL(audioBlob);
       setUserAudioUrl(url);
       return () => URL.revokeObjectURL(url);
+    } else {
+      setUserAudioUrl(null);
     }
   }, [audioBlob]);
   
-  const cleanupTimers = () => {
-    if (recordingTimerRef.current) {
-        clearTimeout(recordingTimerRef.current);
-        recordingTimerRef.current = null;
-    }
-  };
 
   useEffect(() => {
     // When isRecording becomes true, trigger the animation
@@ -93,21 +90,28 @@ export function IdiomCard({ idiom, isSaved, onSaveToggle }: IdiomCardProps) {
 
   useEffect(() => {
     // Component unmount cleanup
-    return () => cleanupTimers();
+    return () => {
+      if (recordingTimerRef.current) {
+        clearTimeout(recordingTimerRef.current);
+      }
+    };
   }, []);
 
   const handleStartRecording = () => {
+    setRecordingAttempted(false);
     setUserAudioUrl(null);
     startRecording();
     recordingTimerRef.current = setTimeout(handleStopRecording, MAX_RECORDING_TIME_MS);
   };
 
   const handleStopRecording = () => {
-    if (isRecording) {
-      stopRecording();
+    if (recordingTimerRef.current) {
+        clearTimeout(recordingTimerRef.current);
+        recordingTimerRef.current = null;
     }
-    cleanupTimers();
+    stopRecording();
     setIsAnimatingProgress(false);
+    setRecordingAttempted(true);
   };
 
   const speak = (text: string) => {
@@ -182,7 +186,7 @@ export function IdiomCard({ idiom, isSaved, onSaveToggle }: IdiomCardProps) {
         </div>
         
         <div className="flex flex-col justify-center items-center gap-4 my-6 min-h-[140px]">
-            {!isRecording && !hasRecording && (
+            {!isRecording && !recordingAttempted && (
                 <div className="w-full data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0">
                     <Button onClick={handleStartRecording} variant="destructive" size="lg" className="h-14 w-full">
                         <Mic className="h-6 w-6 mr-2" /> Record
@@ -201,9 +205,9 @@ export function IdiomCard({ idiom, isSaved, onSaveToggle }: IdiomCardProps) {
                 </div>
             )}
             
-            {!isRecording && hasRecording && (
+            {!isRecording && recordingAttempted && (
                 <div className="flex flex-col items-stretch justify-center gap-2 w-full data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0">
-                    <Button onClick={handlePlayUserAudio} variant="default" size="lg" className="flex-grow h-14 w-full">
+                    <Button onClick={handlePlayUserAudio} variant="default" size="lg" className="flex-grow h-14 w-full" disabled={!hasRecording}>
                         <Play className="mr-2 h-6 w-6" /> Play Your Attempt
                     </Button>
                     <Button onClick={handleStartRecording} variant="destructive" size="lg" className="flex-grow h-14 w-full">

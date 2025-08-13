@@ -1,6 +1,7 @@
+
 "use client";
 
-import { useState, useRef } from 'react';
+import { useState, useRef, useCallback } from 'react';
 import { useToast } from './use-toast';
 
 export const useRecorder = () => {
@@ -10,8 +11,17 @@ export const useRecorder = () => {
     const mediaRecorderRef = useRef<MediaRecorder | null>(null);
     const audioChunksRef = useRef<Blob[]>([]);
 
-    const startRecording = async () => {
-        if (isRecording) return;
+    const stopRecording = useCallback(() => {
+        if (mediaRecorderRef.current && mediaRecorderRef.current.state === "recording") {
+            mediaRecorderRef.current.stop();
+        }
+        setIsRecording(false);
+    }, []);
+
+    const startRecording = useCallback(async () => {
+        if (isRecording) {
+            stopRecording();
+        }
         
         try {
             const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -24,12 +34,18 @@ export const useRecorder = () => {
             audioChunksRef.current = [];
 
             mediaRecorderRef.current.ondataavailable = event => {
-                audioChunksRef.current.push(event.data);
+                if (event.data.size > 0) {
+                    audioChunksRef.current.push(event.data);
+                }
             };
 
             mediaRecorderRef.current.onstop = () => {
-                const blob = new Blob(audioChunksRef.current, { type: isSupported ? 'audio/mp4' : 'audio/webm' });
-                setAudioBlob(blob);
+                if (audioChunksRef.current.length > 0) {
+                    const blob = new Blob(audioChunksRef.current, { type: isSupported ? 'audio/mp4' : 'audio/webm' });
+                    setAudioBlob(blob);
+                } else {
+                    setAudioBlob(null);
+                }
                 stream.getTracks().forEach(track => track.stop());
             };
 
@@ -38,20 +54,15 @@ export const useRecorder = () => {
             setAudioBlob(null);
         } catch (error) {
             console.error("Error starting recording:", error);
+            setAudioBlob(null);
+            setIsRecording(false);
             toast({
                 variant: "destructive",
                 title: "Recording Error",
                 description: "Could not start recording. Please ensure microphone permissions are granted.",
             });
         }
-    };
-
-    const stopRecording = () => {
-        if (mediaRecorderRef.current && isRecording) {
-            mediaRecorderRef.current.stop();
-            setIsRecording(false);
-        }
-    };
+    }, [isRecording, stopRecording, toast]);
 
     return { isRecording, audioBlob, startRecording, stopRecording };
 };
