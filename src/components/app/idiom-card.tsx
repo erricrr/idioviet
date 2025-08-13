@@ -26,6 +26,7 @@ import {
   Play,
   Info,
   Bookmark,
+  PlayCircle,
 } from "lucide-react";
 import { useRecorder } from "@/hooks/use-recorder";
 import { useEffect, useRef, useState } from "react";
@@ -133,7 +134,10 @@ export function IdiomCard({ idiom, isSaved, onSaveToggle }: IdiomCardProps) {
           className="text-2xl font-bold text-center text-primary tracking-tight cursor-pointer hover:text-primary/80 transition-colors pt-8"
           onClick={() => speak(idiom.phrase)}
         >
-          {idiom.phrase}
+          <div className="flex items-center justify-center gap-2">
+            <span>{idiom.phrase}</span>
+            <PlayCircle className="w-7 h-7" />
+          </div>
         </CardTitle>
       </CardHeader>
       
@@ -162,7 +166,7 @@ export function IdiomCard({ idiom, isSaved, onSaveToggle }: IdiomCardProps) {
               onClick={startRecording}
               aria-label="Start recording"
             >
-              <Mic style={{ width: '40px', height: '40px' }} />
+              <Mic className="w-10 h-10" />
             </Button>
           )}
 
@@ -174,7 +178,7 @@ export function IdiomCard({ idiom, isSaved, onSaveToggle }: IdiomCardProps) {
               aria-label="Stop recording"
               className="w-20 h-20 rounded-full"
             >
-              <Square style={{ width: '40px', height: '40px' }} />
+              <Square className="w-10 h-10" />
             </Button>
           )}
 
