@@ -16,7 +16,7 @@ body {
     --popover: 0 0% 100%;
     --popover-foreground: 0 0% 9%;
     --primary: 46 100% 47%; /* #eeb800 */
-    --primary-foreground: 0 0% 98%;
+    --primary-foreground: 0 0% 9%;
     --secondary: 0 0% 96.1%;
     --secondary-foreground: 0 0% 9%;
     --muted: 0 0% 96.1%;
@@ -44,7 +44,7 @@ body {
     --popover: 20 20% 12%;
     --popover-foreground: 0 0% 98%;
     --primary: 46 100% 47%;
-    --primary-foreground: 0 0% 98%;
+    --primary-foreground: 0 0% 9%;
     --secondary: 20 20% 17%;
     --secondary-foreground: 0 0% 98%;
     --muted: 20 20% 17%;
