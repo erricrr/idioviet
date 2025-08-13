@@ -92,7 +92,7 @@ export const idioms: Idiom[] = [
       { text: 'Còn nước' },
       { text: 'còn tát' },
     ],
-    literalTranslation: 'Vietnamese farmers often have to use a buck to get water into their field. Sometimes water is scarce but if there is still water, they still try their best to take water into the field (See the photo - the literal translation is if there is any water left, still try to take it into the field)',
+    literalTranslation: 'Vietnamese farmers often have to use a buck to get water into their field. Sometimes water is scarce but if there is still water, they still try their best to take water into the field (The literal translation is if there is any water left, still try to take it into the field)',
     actualMeaning: 'When there\'s life, there is hope. (Try your best if there is still a small chance to do something).',
     exampleVietnamese: 'Mẹ của anh ấy ốm rất nặng. Bác sĩ ở thị trấn đã từ chối nhưng anh ấy cố gắng đưa mẹ lên thành phố chữa bệnh với hi vọng còn nước còn tát.',
     exampleEnglish: 'His mother was very ill. The doctor in the town refused, but he tried to take his mother to the city for treatment in the hope that there would be a small chance to help her.',
@@ -267,10 +267,10 @@ export const idioms: Idiom[] = [
   },
   {
     id: 22,
-    phrase: 'Thất bại là mẹ (của) thành công',
+    phrase: 'Thất bại là mẹ của thành công',
     chunks: [
       { text: 'Thất bại là mẹ' },
-      { text: '(của) thành công' },
+      { text: 'của thành công' },
     ],
     literalTranslation: 'Failure is the mother of success.',
     actualMeaning: 'Failure is the mother of success (Advise people to be calm when they fail and learn from the lessons/mistakes they had)',
