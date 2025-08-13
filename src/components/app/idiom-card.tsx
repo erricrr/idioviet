@@ -25,13 +25,13 @@ import {
   Play,
   Info,
   Bookmark,
-  PlayCircle,
 } from "lucide-react";
 import { useRecorder } from "@/hooks/use-recorder";
 import { useEffect, useRef, useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
+import { cn } from "@/lib/utils";
 
 interface IdiomCardProps {
   idiom: Idiom;
@@ -39,7 +39,7 @@ interface IdiomCardProps {
   onSaveToggle: (id: number) => void;
 }
 
-const MAX_RECORDING_TIME = 7000; // 7 seconds
+const MAX_RECORDING_TIME_MS = 7000;
 
 export function IdiomCard({ idiom, isSaved, onSaveToggle }: IdiomCardProps) {
   const { toast } = useToast();
@@ -47,9 +47,7 @@ export function IdiomCard({ idiom, isSaved, onSaveToggle }: IdiomCardProps) {
   const [userAudioUrl, setUserAudioUrl] = useState<string | null>(null);
   const audioRef = useRef<HTMLAudioElement>(null);
   const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);
-  const [recordingProgress, setRecordingProgress] = useState(0);
   const recordingTimerRef = useRef<NodeJS.Timeout | null>(null);
-  const progressIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     if (typeof window !== 'undefined' && window.speechSynthesis) {
@@ -79,14 +77,10 @@ export function IdiomCard({ idiom, isSaved, onSaveToggle }: IdiomCardProps) {
         clearTimeout(recordingTimerRef.current);
         recordingTimerRef.current = null;
     }
-    if (progressIntervalRef.current) {
-        clearInterval(progressIntervalRef.current);
-        progressIntervalRef.current = null;
-    }
-    setRecordingProgress(0);
   };
 
   useEffect(() => {
+    // Component unmount cleanup
     return () => cleanupTimers();
   }, []);
 
@@ -97,15 +91,11 @@ export function IdiomCard({ idiom, isSaved, onSaveToggle }: IdiomCardProps) {
     }
     
     startRecording();
-    setRecordingProgress(0);
-
-    progressIntervalRef.current = setInterval(() => {
-        setRecordingProgress(prev => prev + 100 / (MAX_RECORDING_TIME / 100));
-    }, 100);
 
     recordingTimerRef.current = setTimeout(() => {
+        // Automatically stop recording after the max time
         handleStopRecording();
-    }, MAX_RECORDING_TIME);
+    }, MAX_RECORDING_TIME_MS);
   };
 
   const handleStopRecording = () => {
@@ -185,24 +175,28 @@ export function IdiomCard({ idiom, isSaved, onSaveToggle }: IdiomCardProps) {
           </div>
         </div>
         
-        <div className="flex flex-col justify-center items-center gap-4 my-6 h-24">
+        <div className="flex flex-col justify-center items-center gap-4 my-6 min-h-[140px]">
             {!isRecording && !hasRecording && (
-                <Button onClick={handleStartRecording} variant="destructive" size="lg" className="h-14">
-                    <Mic className="h-6 w-6 mr-2" /> Record
-                </Button>
+                <div className="w-full data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0">
+                    <Button onClick={handleStartRecording} variant="destructive" size="lg" className="h-14 w-full">
+                        <Mic className="h-6 w-6 mr-2" /> Record
+                    </Button>
+                </div>
             )}
 
             {isRecording && (
-                <Button onClick={handleStopRecording} variant="destructive" size="lg" className="h-14 relative overflow-hidden">
-                    <div className="absolute top-0 left-0 h-full bg-red-500/50" style={{ width: `${recordingProgress}%` }} />
-                    <div className="relative z-10 flex items-center">
-                        <Square className="w-6 h-6 mr-2" /> Stop
-                    </div>
-                </Button>
+                <div className="w-full data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0">
+                    <Button onClick={handleStopRecording} variant="destructive" size="lg" className="h-14 w-full relative overflow-hidden">
+                        <div className={cn("recording-progress", isRecording && "w-full")} />
+                        <div className="relative z-10 flex items-center">
+                            <Square className="w-6 h-6 mr-2" /> Stop
+                        </div>
+                    </Button>
+                </div>
             )}
             
             {!isRecording && hasRecording && (
-                <div className="flex flex-col items-stretch justify-center gap-2 w-full">
+                <div className="flex flex-col items-stretch justify-center gap-2 w-full data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0">
                     <Button onClick={handlePlayUserAudio} variant="default" size="lg" className="flex-grow h-14">
                         <Play className="mr-2 h-6 w-6" /> Play Your Attempt
                     </Button>
