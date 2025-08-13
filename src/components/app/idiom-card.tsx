@@ -39,12 +39,17 @@ interface IdiomCardProps {
   onSaveToggle: (id: number) => void;
 }
 
+const MAX_RECORDING_TIME = 7000; // 7 seconds
+
 export function IdiomCard({ idiom, isSaved, onSaveToggle }: IdiomCardProps) {
   const { toast } = useToast();
   const { isRecording, audioBlob, startRecording, stopRecording } = useRecorder();
   const [userAudioUrl, setUserAudioUrl] = useState<string | null>(null);
   const audioRef = useRef<HTMLAudioElement>(null);
   const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);
+  const [recordingProgress, setRecordingProgress] = useState(0);
+  const recordingTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const progressIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     if (typeof window !== 'undefined' && window.speechSynthesis) {
@@ -68,6 +73,46 @@ export function IdiomCard({ idiom, isSaved, onSaveToggle }: IdiomCardProps) {
       return () => URL.revokeObjectURL(url);
     }
   }, [audioBlob]);
+  
+  const cleanupTimers = () => {
+    if (recordingTimerRef.current) {
+        clearTimeout(recordingTimerRef.current);
+        recordingTimerRef.current = null;
+    }
+    if (progressIntervalRef.current) {
+        clearInterval(progressIntervalRef.current);
+        progressIntervalRef.current = null;
+    }
+    setRecordingProgress(0);
+  };
+
+  useEffect(() => {
+    return () => cleanupTimers();
+  }, []);
+
+  const handleStartRecording = () => {
+    setUserAudioUrl(null);
+    if (audioRef.current) {
+        URL.revokeObjectURL(audioRef.current.src);
+    }
+    
+    startRecording();
+    setRecordingProgress(0);
+
+    progressIntervalRef.current = setInterval(() => {
+        setRecordingProgress(prev => prev + 100 / (MAX_RECORDING_TIME / 100));
+    }, 100);
+
+    recordingTimerRef.current = setTimeout(() => {
+        handleStopRecording();
+    }, MAX_RECORDING_TIME);
+  };
+
+  const handleStopRecording = () => {
+    stopRecording();
+    cleanupTimers();
+  };
+
 
   const speak = (text: string) => {
     if (typeof window !== "undefined" && window.speechSynthesis) {
@@ -99,14 +144,6 @@ export function IdiomCard({ idiom, isSaved, onSaveToggle }: IdiomCardProps) {
       audioRef.current.play();
     }
   };
-  
-  const handleRecord = () => {
-    setUserAudioUrl(null);
-    if (audioRef.current) {
-        URL.revokeObjectURL(audioRef.current.src);
-    }
-    startRecording();
-  };
 
   const hasRecording = userAudioUrl !== null;
 
@@ -124,7 +161,7 @@ export function IdiomCard({ idiom, isSaved, onSaveToggle }: IdiomCardProps) {
             <Bookmark className={`w-6 h-6 ${isSaved ? 'fill-primary text-primary' : 'text-primary'}`} />
         </Button>
         <CardTitle 
-          className="text-2xl font-bold text-center text-primary tracking-tight cursor-pointer hover:text-primary/80 transition-colors pt-8"
+          className="text-2xl font-bold text-center text-primary tracking-tight cursor-pointer hover:text-primary/80 transition-colors pt-8 flex items-center justify-center gap-2"
           onClick={() => speak(idiom.phrase)}
         >
           {idiom.phrase}
@@ -150,24 +187,18 @@ export function IdiomCard({ idiom, isSaved, onSaveToggle }: IdiomCardProps) {
         
         <div className="flex flex-col justify-center items-center gap-4 my-6 h-24">
             {!isRecording && !hasRecording && (
-                <>
-                    <p className="text-muted-foreground">Ready to record your attempt?</p>
-                    <Button onClick={handleRecord} variant="destructive" size="lg" className="h-14">
-                        <Mic className="h-6 w-6 mr-2" /> Record
-                    </Button>
-                </>
+                <Button onClick={handleStartRecording} variant="destructive" size="lg" className="h-14">
+                    <Mic className="h-6 w-6 mr-2" /> Record
+                </Button>
             )}
 
             {isRecording && (
-                <>
-                    <div className="flex items-center gap-2 text-destructive animate-pulse">
-                        <div className="w-3 h-3 rounded-full bg-destructive"></div>
-                        <span className="font-semibold">Recording...</span>
-                    </div>
-                    <Button onClick={stopRecording} variant="destructive" size="lg" className="h-14">
+                <Button onClick={handleStopRecording} variant="destructive" size="lg" className="h-14 relative overflow-hidden">
+                    <div className="absolute top-0 left-0 h-full bg-destructive/50" style={{ width: `${recordingProgress}%` }} />
+                    <div className="relative z-10 flex items-center">
                         <Square className="w-6 h-6 mr-2" /> Stop
-                    </Button>
-                </>
+                    </div>
+                </Button>
             )}
             
             {!isRecording && hasRecording && (
@@ -175,7 +206,7 @@ export function IdiomCard({ idiom, isSaved, onSaveToggle }: IdiomCardProps) {
                     <Button onClick={handlePlayUserAudio} variant="default" size="lg" className="flex-grow h-14">
                         <Play className="mr-2 h-6 w-6" /> Play Your Attempt
                     </Button>
-                    <Button onClick={handleRecord} variant="destructive" size="lg" className="flex-grow h-14">
+                    <Button onClick={handleStartRecording} variant="destructive" size="lg" className="flex-grow h-14">
                         <Mic className="h-6 w-6 mr-2" /> Record Again
                     </Button>
                 </div>
