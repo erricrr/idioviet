@@ -210,10 +210,10 @@ export function IdiomCard({ idiom, isSaved, onSaveToggle }: IdiomCardProps) {
             
             {!isRecording && hasRecording && (
                 <div className="flex flex-col items-stretch justify-center gap-2 w-full data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0">
-                    <Button onClick={handlePlayUserAudio} variant="default" size="lg" className="flex-grow h-14">
+                    <Button onClick={handlePlayUserAudio} variant="default" size="lg" className="flex-grow h-14 w-full">
                         <Play className="mr-2 h-6 w-6" /> Play Your Attempt
                     </Button>
-                    <Button onClick={handleStartRecording} variant="destructive" size="lg" className="flex-grow h-14">
+                    <Button onClick={handleStartRecording} variant="destructive" size="lg" className="flex-grow h-14 w-full">
                         <Mic className="h-6 w-6 mr-2" /> Record Again
                     </Button>
                 </div>
