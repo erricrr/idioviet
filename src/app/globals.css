@@ -75,7 +75,9 @@ body {
 
 @layer utilities {
   .recording-progress {
-    @apply absolute top-0 left-0 h-full bg-red-500/50 transition-all ease-linear;
+    @apply absolute top-0 left-0 h-full bg-red-500/50;
+    transition-property: width;
+    transition-timing-function: linear;
     transition-duration: 7000ms;
   }
 }
