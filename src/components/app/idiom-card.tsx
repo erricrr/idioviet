@@ -161,7 +161,7 @@ export function IdiomCard({ idiom, isSaved, onSaveToggle }: IdiomCardProps) {
           {!isRecording && !userAudioUrl && (
             <Button
               size="icon"
-              className="bg-accent hover:bg-accent/90 text-accent-foreground w-16 h-16 rounded-full"
+              className="bg-accent hover:bg-accent/90 text-accent-foreground w-20 h-20 rounded-full"
               onClick={startRecording}
               aria-label="Start recording"
             >
