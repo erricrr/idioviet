@@ -154,7 +154,7 @@ export function IdiomCard({ idiom, isSaved, onSaveToggle }: IdiomCardProps) {
               aria-label="Stop recording"
               className="w-20 h-20 rounded-full"
             >
-              <Square className="w-10 h-10" />
+              <Square style={{ width: '40px', height: '40px' }} />
             </Button>
           )}
 
@@ -165,8 +165,8 @@ export function IdiomCard({ idiom, isSaved, onSaveToggle }: IdiomCardProps) {
               onClick={startRecording}
               aria-label="Start recording"
             >
-              <Mic className="w-10 h-10" />
-            </Button>
+          <Mic style={{ width: '40px', height: '40px' }} />
+          </Button>
           )}
 
           {userAudioUrl && !isRecording && (
@@ -181,7 +181,7 @@ export function IdiomCard({ idiom, isSaved, onSaveToggle }: IdiomCardProps) {
                     aria-label="Re-record"
                     className="shrink-0 h-12 w-12"
                 >
-                    <RotateCcw className="h-8 w-8" />
+                    <Mic className="h-8 w-8" />
                 </Button>
             </div>
           )}
@@ -200,7 +200,6 @@ export function IdiomCard({ idiom, isSaved, onSaveToggle }: IdiomCardProps) {
             <div className="p-4 border-b border-border -mx-6 -mt-6 mb-4 sticky top-0 bg-background z-10">
                 <SheetClose asChild>
                     <Button variant="secondary" className="w-full">
-                        <X className="w-5 h-5 mr-2" />
                         Close
                     </Button>
                 </SheetClose>
