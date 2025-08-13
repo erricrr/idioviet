@@ -25,6 +25,7 @@ import {
   Play,
   Info,
   Bookmark,
+  Volume2,
 } from "lucide-react";
 import { useRecorder } from "@/hooks/use-recorder";
 import { useEffect, useRef, useState } from "react";
@@ -240,7 +241,15 @@ export function IdiomCard({ idiom, isSaved, onSaveToggle }: IdiomCardProps) {
             </div>
             <ScrollArea className="flex-grow w-full touch-pan-y -mx-6 px-6">
                 <SheetHeader className="text-left mb-6">
-                  <SheetTitle className="text-2xl text-primary">{idiom.phrase}</SheetTitle>
+                  <SheetTitle
+                    className="text-2xl text-primary tracking-tight cursor-pointer hover:text-primary/80 transition-colors flex items-center gap-2 underline decoration-dashed decoration-primary/50 decoration-2 underline-offset-4"
+                    onClick={() => speak(idiom.phrase)}
+                    role="button"
+                    tabIndex={0}
+                    title="Tap to play pronunciation"
+                  >
+                    {idiom.phrase}
+                  </SheetTitle>
                 </SheetHeader>
                 <div className="space-y-6 text-left pb-8">
                   <div className="space-y-2">
@@ -254,7 +263,18 @@ export function IdiomCard({ idiom, isSaved, onSaveToggle }: IdiomCardProps) {
                   </div>
                   <Separator />
                   <div className="space-y-2">
-                    <h3 className="font-semibold text-muted-foreground">Example (Vietnamese)</h3>
+                    <div className="flex items-center gap-2">
+                      <h3 className="font-semibold text-muted-foreground">Example (Vietnamese)</h3>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        aria-label="Play Vietnamese example"
+                        title="Play Vietnamese example"
+                        onClick={() => speak(idiom.exampleVietnamese)}
+                      >
+                        <Volume2 className="w-4 h-4" />
+                      </Button>
+                    </div>
                     <p className="text-lg">{idiom.exampleVietnamese}</p>
                   </div>
                   <Separator />
