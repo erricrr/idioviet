@@ -13,6 +13,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Sheet,
+  SheetClose,
   SheetContent,
   SheetDescription,
   SheetHeader,
@@ -26,6 +27,7 @@ import {
   Info,
   Bookmark,
   RotateCcw,
+  X,
 } from "lucide-react";
 import { useRecorder } from "@/hooks/use-recorder";
 import { useEffect, useRef, useState } from "react";
@@ -194,13 +196,20 @@ export function IdiomCard({ idiom, isSaved, onSaveToggle }: IdiomCardProps) {
               Details & Meaning
             </Button>
           </SheetTrigger>
-          <SheetContent side="bottom" className="rounded-t-lg">
-            <ScrollArea className="h-[80vh] w-full touch-pan-y">
-              <div className="p-6">
+          <SheetContent side="bottom" className="rounded-t-lg flex flex-col h-[90vh]">
+            <div className="p-4 border-b border-border -mx-6 -mt-6 mb-4 sticky top-0 bg-background z-10">
+                <SheetClose asChild>
+                    <Button variant="secondary" className="w-full">
+                        <X className="w-5 h-5 mr-2" />
+                        Close
+                    </Button>
+                </SheetClose>
+            </div>
+            <ScrollArea className="flex-grow w-full touch-pan-y -mx-6 px-6">
                 <SheetHeader className="text-left mb-6">
                   <SheetTitle className="text-2xl text-primary">{idiom.phrase}</SheetTitle>
                 </SheetHeader>
-                <div className="space-y-6 text-left">
+                <div className="space-y-6 text-left pb-8">
                   <div className="space-y-2">
                     <h3 className="font-semibold text-muted-foreground">Literal Translation</h3>
                     <p className="text-lg italic">"{idiom.literalTranslation}"</p>
@@ -221,7 +230,6 @@ export function IdiomCard({ idiom, isSaved, onSaveToggle }: IdiomCardProps) {
                     <p className="text-lg">{idiom.exampleEnglish}</p>
                   </div>
                 </div>
-              </div>
             </ScrollArea>
           </SheetContent>
         </Sheet>
