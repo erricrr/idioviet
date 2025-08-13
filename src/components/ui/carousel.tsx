@@ -198,8 +198,28 @@ CarouselItem.displayName = "CarouselItem"
 const CarouselPrevious = React.forwardRef<
   HTMLButtonElement,
   React.ComponentProps<typeof Button>
->(({ className, variant = "outline", size = "icon", ...props }, ref) => {
+>(({ className, variant = "outline", size = "icon", onClick, ...props }, ref) => {
   const { scrollPrev, canScrollPrev } = useCarousel()
+
+  const pointerHandledRef = React.useRef(false)
+
+  const handlePointerDown = (event: React.PointerEvent<HTMLButtonElement>) => {
+    pointerHandledRef.current = true
+    event.stopPropagation()
+    event.preventDefault()
+    if (!canScrollPrev) return
+    scrollPrev()
+  }
+
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    if (pointerHandledRef.current) {
+      pointerHandledRef.current = false
+      return
+    }
+    if (!canScrollPrev) return
+    scrollPrev()
+    onClick?.(event)
+  }
 
   return (
     <Button
@@ -207,11 +227,12 @@ const CarouselPrevious = React.forwardRef<
       variant={variant}
       size={size}
       className={cn(
-        "absolute h-8 w-8 rounded-full z-10 left-2 top-1/2 -translate-y-1/2",
+        "absolute h-11 w-11 rounded-full z-20 left-2 top-1/2 -translate-y-1/2 active:!-translate-y-1/2 touch-none select-none",
         className
       )}
       disabled={!canScrollPrev}
-      onClick={scrollPrev}
+      onPointerDown={handlePointerDown}
+      onClick={handleClick}
       {...props}
     >
       <ArrowLeft className="h-4 w-4" />
@@ -224,8 +245,28 @@ CarouselPrevious.displayName = "CarouselPrevious"
 const CarouselNext = React.forwardRef<
   HTMLButtonElement,
   React.ComponentProps<typeof Button>
->(({ className, variant = "outline", size = "icon", ...props }, ref) => {
+>(({ className, variant = "outline", size = "icon", onClick, ...props }, ref) => {
   const { scrollNext, canScrollNext } = useCarousel()
+
+  const pointerHandledRef = React.useRef(false)
+
+  const handlePointerDown = (event: React.PointerEvent<HTMLButtonElement>) => {
+    pointerHandledRef.current = true
+    event.stopPropagation()
+    event.preventDefault()
+    if (!canScrollNext) return
+    scrollNext()
+  }
+
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    if (pointerHandledRef.current) {
+      pointerHandledRef.current = false
+      return
+    }
+    if (!canScrollNext) return
+    scrollNext()
+    onClick?.(event)
+  }
 
   return (
     <Button
@@ -233,11 +274,12 @@ const CarouselNext = React.forwardRef<
       variant={variant}
       size={size}
       className={cn(
-        "absolute h-8 w-8 rounded-full z-10 right-2 top-1/2 -translate-y-1/2",
+        "absolute h-11 w-11 rounded-full z-20 right-2 top-1/2 -translate-y-1/2 active:!-translate-y-1/2 touch-none select-none",
         className
       )}
       disabled={!canScrollNext}
-      onClick={scrollNext}
+      onPointerDown={handlePointerDown}
+      onClick={handleClick}
       {...props}
     >
       <ArrowRight className="h-4 w-4" />
