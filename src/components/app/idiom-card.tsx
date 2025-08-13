@@ -48,7 +48,7 @@ export function IdiomCard({ idiom, isSaved, onSaveToggle }: IdiomCardProps) {
   const audioRef = useRef<HTMLAudioElement>(null);
   const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);
   const recordingTimerRef = useRef<NodeJS.Timeout | null>(null);
-  const [isRecordingProgress, setIsRecordingProgress] = useState(false);
+  const [isAnimatingProgress, setIsAnimatingProgress] = useState(false);
 
   useEffect(() => {
     if (typeof window !== 'undefined' && window.speechSynthesis) {
@@ -81,6 +81,17 @@ export function IdiomCard({ idiom, isSaved, onSaveToggle }: IdiomCardProps) {
   };
 
   useEffect(() => {
+    // When isRecording becomes true, trigger the animation
+    if (isRecording) {
+        // Use a timeout to allow the DOM to update before adding the class
+        const animationTimeout = setTimeout(() => {
+            setIsAnimatingProgress(true);
+        }, 10);
+        return () => clearTimeout(animationTimeout);
+    }
+  }, [isRecording]);
+
+  useEffect(() => {
     // Component unmount cleanup
     return () => cleanupTimers();
   }, []);
@@ -92,7 +103,6 @@ export function IdiomCard({ idiom, isSaved, onSaveToggle }: IdiomCardProps) {
     }
     
     startRecording();
-    setIsRecordingProgress(true);
 
     recordingTimerRef.current = setTimeout(() => {
       handleStopRecording();
@@ -100,9 +110,10 @@ export function IdiomCard({ idiom, isSaved, onSaveToggle }: IdiomCardProps) {
   };
 
   const handleStopRecording = () => {
+    if (!isRecording) return;
     stopRecording();
-    setIsRecordingProgress(false);
     cleanupTimers();
+    setIsAnimatingProgress(false);
   };
 
 
@@ -189,7 +200,7 @@ export function IdiomCard({ idiom, isSaved, onSaveToggle }: IdiomCardProps) {
             {isRecording && (
                 <div className="w-full data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0">
                     <Button onClick={handleStopRecording} variant="destructive" size="lg" className="h-14 w-full relative overflow-hidden">
-                        <div className={cn("recording-progress", isRecordingProgress && "w-full")} />
+                        <div className={cn("recording-progress", isAnimatingProgress && "w-full")} />
                         <div className="relative z-10 flex items-center">
                             <Square className="w-6 h-6 mr-2" /> Stop
                         </div>
