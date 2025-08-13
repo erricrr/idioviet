@@ -92,7 +92,7 @@ export function IdiomCard({ idiom, isSaved, onSaveToggle }: IdiomCardProps) {
 
   const handleStartRecording = () => {
     setUserAudioUrl(null);
-    if (audioRef.current) {
+    if (audioRef.current && audioRef.current.src) {
         URL.revokeObjectURL(audioRef.current.src);
     }
     
@@ -194,7 +194,7 @@ export function IdiomCard({ idiom, isSaved, onSaveToggle }: IdiomCardProps) {
 
             {isRecording && (
                 <Button onClick={handleStopRecording} variant="destructive" size="lg" className="h-14 relative overflow-hidden">
-                    <div className="absolute top-0 left-0 h-full bg-destructive/50" style={{ width: `${recordingProgress}%` }} />
+                    <div className="absolute top-0 left-0 h-full bg-red-500/50" style={{ width: `${recordingProgress}%` }} />
                     <div className="relative z-10 flex items-center">
                         <Square className="w-6 h-6 mr-2" /> Stop
                     </div>
