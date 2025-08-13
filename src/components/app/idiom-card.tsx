@@ -15,7 +15,6 @@ import {
   Sheet,
   SheetClose,
   SheetContent,
-  SheetDescription,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
@@ -43,7 +42,6 @@ export function IdiomCard({ idiom, isSaved, onSaveToggle }: IdiomCardProps) {
   const { toast } = useToast();
   const { isRecording, audioBlob, startRecording, stopRecording } = useRecorder();
   const [userAudioUrl, setUserAudioUrl] = useState<string | null>(null);
-  const [isReRecording, setIsReRecording] = useState(false);
   const audioRef = useRef<HTMLAudioElement>(null);
   const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);
 
@@ -66,7 +64,6 @@ export function IdiomCard({ idiom, isSaved, onSaveToggle }: IdiomCardProps) {
     if (audioBlob) {
       const url = URL.createObjectURL(audioBlob);
       setUserAudioUrl(url);
-      setIsReRecording(false);
       return () => URL.revokeObjectURL(url);
     }
   }, [audioBlob]);
@@ -101,20 +98,16 @@ export function IdiomCard({ idiom, isSaved, onSaveToggle }: IdiomCardProps) {
       audioRef.current.play();
     }
   };
-
-  const handleRerecord = () => {
-    setIsReRecording(true);
-    startRecording();
-  }
-
-  const handleStopRerecord = () => {
-    stopRecording();
-  }
   
-  const showInitialRecordButton = !isRecording && !userAudioUrl;
-  const showLargeStopButton = isRecording && !isReRecording;
-  const showPlaybackControls = userAudioUrl && !isRecording;
-  const showReRecordingControls = userAudioUrl && isRecording && isReRecording;
+  const handleRecord = () => {
+    setUserAudioUrl(null);
+    if (audioRef.current) {
+        URL.revokeObjectURL(audioRef.current.src);
+    }
+    startRecording();
+  };
+
+  const hasRecording = userAudioUrl !== null;
 
   return (
     <Card className="w-full max-w-md mx-auto shadow-lg flex flex-col border-none">
@@ -153,64 +146,39 @@ export function IdiomCard({ idiom, isSaved, onSaveToggle }: IdiomCardProps) {
             ))}
           </div>
         </div>
+        
+        <div className="flex flex-col justify-center items-center gap-4 my-6 h-24">
+            {!isRecording && !hasRecording && (
+                <>
+                    <p className="text-muted-foreground">Ready to record your attempt?</p>
+                    <Button onClick={handleRecord} size="lg" className="h-14">
+                        <Mic className="h-6 w-6 mr-2" /> Record
+                    </Button>
+                </>
+            )}
 
-        <div className="flex justify-center items-center gap-4 my-6 h-20">
-          {showInitialRecordButton && (
-            <Button
-              size="icon"
-              className="bg-accent hover:bg-accent/90 text-accent-foreground w-20 h-20 rounded-full"
-              onClick={startRecording}
-              aria-label="Start recording"
-            >
-              <Mic className="w-10 h-10" />
-            </Button>
-          )}
-
-          {showLargeStopButton && (
-            <Button
-              size="icon"
-              variant="destructive"
-              onClick={stopRecording}
-              aria-label="Stop recording"
-              className="w-20 h-20 rounded-full"
-            >
-              <Square className="w-10 h-10" />
-            </Button>
-          )}
-
-          {showPlaybackControls && (
-             <div className="flex items-center justify-center gap-2">
-                <Button onClick={handlePlayUserAudio} variant="secondary" size="lg" className="flex-grow">
-                    <Play className="mr-2 h-8 w-8" /> Your Attempt
-                </Button>
-                <Button 
-                    onClick={handleRerecord} 
-                    variant="outline" 
-                    size="icon"
-                    aria-label="Re-record"
-                    className="shrink-0 h-12 w-12"
-                >
-                    <Mic className="h-8 w-8" />
-                </Button>
-            </div>
-          )}
-
-          {showReRecordingControls && (
-             <div className="flex items-center justify-center gap-2">
-                <Button variant="secondary" size="lg" className="flex-grow" disabled>
-                    <Play className="mr-2 h-8 w-8" /> Your Attempt
-                </Button>
-                <Button 
-                    onClick={handleStopRerecord} 
-                    variant="destructive" 
-                    size="icon"
-                    aria-label="Stop re-recording"
-                    className="shrink-0 h-12 w-12"
-                >
-                    <Square className="h-8 w-8" />
-                </Button>
-            </div>
-          )}
+            {isRecording && (
+                <>
+                    <div className="flex items-center gap-2 text-destructive animate-pulse">
+                        <div className="w-3 h-3 rounded-full bg-destructive"></div>
+                        <span className="font-semibold">Recording...</span>
+                    </div>
+                    <Button onClick={stopRecording} variant="destructive" size="lg" className="h-14">
+                        <Square className="w-6 h-6 mr-2" /> Stop
+                    </Button>
+                </>
+            )}
+            
+            {!isRecording && hasRecording && (
+                <div className="flex items-stretch justify-center gap-2 w-full">
+                    <Button onClick={handlePlayUserAudio} variant="secondary" size="lg" className="flex-grow h-14">
+                        <Play className="mr-2 h-6 w-6" /> Play Your Attempt
+                    </Button>
+                    <Button onClick={handleRecord} variant="outline" size="lg" className="flex-grow h-14">
+                        <Mic className="h-6 w-6 mr-2" /> Record Again
+                    </Button>
+                </div>
+            )}
         </div>
       </CardContent>
 
@@ -223,7 +191,7 @@ export function IdiomCard({ idiom, isSaved, onSaveToggle }: IdiomCardProps) {
             </Button>
           </SheetTrigger>
           <SheetContent side="bottom" className="rounded-t-lg flex flex-col h-[90vh]">
-            <div className="p-4 border-b border-border -mx-6 -mt-6 mb-4 sticky top-0 bg-background z-10">
+             <div className="p-4 border-b border-border -mx-6 -mt-6 mb-4 sticky top-0 bg-background z-10">
                 <SheetClose asChild>
                     <Button variant="secondary" className="w-full">
                         Close
