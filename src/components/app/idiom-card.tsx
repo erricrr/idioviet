@@ -152,9 +152,9 @@ export function IdiomCard({ idiom, isSaved, onSaveToggle }: IdiomCardProps) {
               variant="destructive"
               onClick={stopRecording}
               aria-label="Stop recording"
-              className="w-16 h-16 rounded-full"
+              className="w-20 h-20 rounded-full"
             >
-              <Square className="w-8 h-8" />
+              <Square className="w-10 h-10" />
             </Button>
           )}
 
@@ -165,23 +165,23 @@ export function IdiomCard({ idiom, isSaved, onSaveToggle }: IdiomCardProps) {
               onClick={startRecording}
               aria-label="Start recording"
             >
-              <Mic className="w-8 h-8" />
+              <Mic className="w-10 h-10" />
             </Button>
           )}
 
           {userAudioUrl && !isRecording && (
              <div className="flex items-center justify-center gap-2">
                 <Button onClick={handlePlayUserAudio} variant="secondary" size="lg" className="flex-grow">
-                    <Play className="mr-2 h-6 w-6" /> Your Attempt
+                    <Play className="mr-2 h-8 w-8" /> Your Attempt
                 </Button>
                 <Button 
                     onClick={handleRerecord} 
                     variant="outline" 
                     size="icon"
                     aria-label="Re-record"
-                    className="shrink-0 h-11 w-11"
+                    className="shrink-0 h-12 w-12"
                 >
-                    <RotateCcw className="h-6 w-6" />
+                    <RotateCcw className="h-8 w-8" />
                 </Button>
             </div>
           )}
