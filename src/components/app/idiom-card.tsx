@@ -26,7 +26,6 @@ import {
   Play,
   Info,
   Bookmark,
-  PlayCircle,
 } from "lucide-react";
 import { useRecorder } from "@/hooks/use-recorder";
 import { useEffect, useRef, useState } from "react";
@@ -134,10 +133,7 @@ export function IdiomCard({ idiom, isSaved, onSaveToggle }: IdiomCardProps) {
           className="text-2xl font-bold text-center text-primary tracking-tight cursor-pointer hover:text-primary/80 transition-colors pt-8"
           onClick={() => speak(idiom.phrase)}
         >
-          <div className="flex items-center justify-center gap-2">
-            <span>{idiom.phrase}</span>
-            <PlayCircle className="w-7 h-7" />
-          </div>
+          {idiom.phrase}
         </CardTitle>
       </CardHeader>
       
