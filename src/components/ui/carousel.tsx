@@ -202,13 +202,23 @@ const CarouselPrevious = React.forwardRef<
   const { scrollPrev, canScrollPrev } = useCarousel()
 
   const pointerHandledRef = React.useRef(false)
+  const [isPressed, setIsPressed] = React.useState(false)
 
   const handlePointerDown = (event: React.PointerEvent<HTMLButtonElement>) => {
+    setIsPressed(true)
     pointerHandledRef.current = true
     event.stopPropagation()
     event.preventDefault()
     if (!canScrollPrev) return
     scrollPrev()
+  }
+
+  const handlePointerUp = () => {
+    setIsPressed(false)
+  }
+
+  const handlePointerCancel = () => {
+    setIsPressed(false)
   }
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -227,11 +237,15 @@ const CarouselPrevious = React.forwardRef<
       variant={variant}
       size={size}
       className={cn(
-          "absolute h-11 w-11 rounded-full z-20 left-2 top-1/2 -translate-y-1/2 active:!-translate-y-1/2 touch-none select-none carousel-arrow-fix",
-        className
-      )}
+          "absolute h-11 w-11 rounded-full z-20 left-2 top-1/2 -translate-y-1/2 active:!-translate-y-1/2 touch-none select-none carousel-arrow-fix hover:!bg-card hover:!text-card-foreground !active:bg-card !active:text-card-foreground",
+          isPressed && "!bg-card !text-card-foreground",
+          className
+        )}
       disabled={!canScrollPrev}
       onPointerDown={handlePointerDown}
+      onPointerUp={handlePointerUp}
+      onPointerCancel={handlePointerCancel}
+      onPointerLeave={handlePointerCancel}
       onClick={handleClick}
       {...props}
     >
@@ -249,13 +263,23 @@ const CarouselNext = React.forwardRef<
   const { scrollNext, canScrollNext } = useCarousel()
 
   const pointerHandledRef = React.useRef(false)
+  const [isPressed, setIsPressed] = React.useState(false)
 
   const handlePointerDown = (event: React.PointerEvent<HTMLButtonElement>) => {
+    setIsPressed(true)
     pointerHandledRef.current = true
     event.stopPropagation()
     event.preventDefault()
     if (!canScrollNext) return
     scrollNext()
+  }
+
+  const handlePointerUp = () => {
+    setIsPressed(false)
+  }
+
+  const handlePointerCancel = () => {
+    setIsPressed(false)
   }
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -274,11 +298,15 @@ const CarouselNext = React.forwardRef<
       variant={variant}
       size={size}
       className={cn(
-          "absolute h-11 w-11 rounded-full z-20 right-2 top-1/2 -translate-y-1/2 active:!-translate-y-1/2 touch-none select-none carousel-arrow-fix",
-        className
-      )}
+          "absolute h-11 w-11 rounded-full z-20 right-2 top-1/2 -translate-y-1/2 active:!-translate-y-1/2 touch-none select-none carousel-arrow-fix hover:!bg-card hover:!text-card-foreground !active:bg-card !active:text-card-foreground",
+          isPressed && "!bg-card !text-card-foreground",
+          className
+        )}
       disabled={!canScrollNext}
       onPointerDown={handlePointerDown}
+      onPointerUp={handlePointerUp}
+      onPointerCancel={handlePointerCancel}
+      onPointerLeave={handlePointerCancel}
       onClick={handleClick}
       {...props}
     >

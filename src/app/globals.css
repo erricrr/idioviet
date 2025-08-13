@@ -87,19 +87,19 @@ body {
     to { width: 100%; }
   }
 
-  .recording-progress-animate {
-    /* no-op: superseded by width transition */
+
+  /* Arrow button interaction behavior */
+  /* Ensure pressed state uses card colors and overrides hover on all devices */
+  .carousel-arrow-fix:active {
+    background-color: hsl(var(--card)) !important;
+    color: hsl(var(--card-foreground)) !important;
   }
 
-  /* Disable sticky hover on touch devices and only show pressed color during touch for carousel arrows */
+  /* Disable sticky hover on touch devices */
   @media (hover: none) {
     .carousel-arrow-fix:hover {
       background-color: hsl(var(--background)) !important;
       color: inherit !important;
-    }
-    .carousel-arrow-fix:active {
-      background-color: hsl(var(--accent)) !important;
-      color: hsl(var(--accent-foreground)) !important;
     }
   }
 }
