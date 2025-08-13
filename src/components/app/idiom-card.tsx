@@ -98,24 +98,17 @@ export function IdiomCard({ idiom, isSaved, onSaveToggle }: IdiomCardProps) {
 
   const handleStartRecording = () => {
     setUserAudioUrl(null);
-    if (audioRef.current && audioRef.current.src) {
-        URL.revokeObjectURL(audioRef.current.src);
-    }
-    
     startRecording();
-
-    recordingTimerRef.current = setTimeout(() => {
-      handleStopRecording();
-    }, MAX_RECORDING_TIME_MS);
+    recordingTimerRef.current = setTimeout(handleStopRecording, MAX_RECORDING_TIME_MS);
   };
 
   const handleStopRecording = () => {
-    if (!isRecording) return;
-    stopRecording();
+    if (isRecording) {
+      stopRecording();
+    }
     cleanupTimers();
     setIsAnimatingProgress(false);
   };
-
 
   const speak = (text: string) => {
     if (typeof window !== "undefined" && window.speechSynthesis) {
