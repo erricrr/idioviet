@@ -170,7 +170,7 @@ export function IdiomCard({ idiom, isSaved, onSaveToggle }: IdiomCardProps) {
             )}
             
             {!isRecording && hasRecording && (
-                <div className="flex items-stretch justify-center gap-2 w-full">
+                <div className="flex flex-col items-stretch justify-center gap-2 w-full">
                     <Button onClick={handlePlayUserAudio} variant="secondary" size="lg" className="flex-grow h-14">
                         <Play className="mr-2 h-6 w-6" /> Play Your Attempt
                     </Button>
