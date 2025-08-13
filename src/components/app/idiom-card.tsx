@@ -25,6 +25,7 @@ import {
   Play,
   Info,
   Bookmark,
+  PlayCircle,
 } from "lucide-react";
 import { useRecorder } from "@/hooks/use-recorder";
 import { useEffect, useRef, useState } from "react";
@@ -151,7 +152,7 @@ export function IdiomCard({ idiom, isSaved, onSaveToggle }: IdiomCardProps) {
             {!isRecording && !hasRecording && (
                 <>
                     <p className="text-muted-foreground">Ready to record your attempt?</p>
-                    <Button onClick={handleRecord} size="lg" className="h-14">
+                    <Button onClick={handleRecord} variant="destructive" size="lg" className="h-14">
                         <Mic className="h-6 w-6 mr-2" /> Record
                     </Button>
                 </>
@@ -174,7 +175,7 @@ export function IdiomCard({ idiom, isSaved, onSaveToggle }: IdiomCardProps) {
                     <Button onClick={handlePlayUserAudio} variant="secondary" size="lg" className="flex-grow h-14">
                         <Play className="mr-2 h-6 w-6" /> Play Your Attempt
                     </Button>
-                    <Button onClick={handleRecord} variant="outline" size="lg" className="flex-grow h-14">
+                    <Button onClick={handleRecord} variant="destructive" size="lg" className="flex-grow h-14">
                         <Mic className="h-6 w-6 mr-2" /> Record Again
                     </Button>
                 </div>
