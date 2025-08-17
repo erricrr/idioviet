@@ -89,7 +89,7 @@ export function InfoDrawer() {
 
         {/* Contact at the bottom */}
         <div className="space-y-2">
-          <h3 className="font-semibold text-muted-foreground">Contact</h3>
+          <h3 className="font-semibold text-muted-foreground">Contact & Feedback</h3>
           <p className="text-lg">
             Email:{" "}
             <a
