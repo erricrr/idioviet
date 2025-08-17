@@ -217,7 +217,7 @@ export function IdiomCard({ idiom, isSaved, onSaveToggle }: IdiomCardProps) {
             onClick={() => onSaveToggle(idiom.id)}
             aria-label={isSaved ? "Unsave idiom" : "Save idiom"}
         >
-            <Bookmark className={`w-6 h-6 ${isSaved ? 'fill-primary text-primary' : 'text-primary'}`} />
+            <Bookmark className={`w-6 h-6 text-primary`} fill={isSaved ? "currentColor" : "none"} />
         </Button>
         <CardTitle
           className="text-3xl font-bold text-center text-primary tracking-tight cursor-pointer hover:text-primary/80 transition-colors pt-8 flex items-center justify-center gap-2 underline decoration-dashed decoration-primary/50 decoration-2 underline-offset-4 hover:decoration-primary focus-visible:underline focus-visible:decoration-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 rounded-sm"

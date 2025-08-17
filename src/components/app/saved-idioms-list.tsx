@@ -47,7 +47,7 @@ export function SavedIdiomsList({
       <SheetContent side="right" className="w-[300px] sm:w-[400px]">
         <SheetHeader>
           <SheetTitle className="text-primary text-2xl flex items-center gap-2">
-            <Bookmark /> Saved Idioms
+            <Bookmark fill="currentColor" /> Saved Idioms
           </SheetTitle>
         </SheetHeader>
         {idioms.length === 0 ? (
