@@ -51,7 +51,6 @@ export function IdiomCard({ idiom, isSaved, onSaveToggle }: IdiomCardProps) {
   const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);
   const recordingTimerRef = useRef<NodeJS.Timeout | null>(null);
   const [isAnimatingProgress, setIsAnimatingProgress] = useState(false);
-  const audioPlayerRef = useRef<HTMLAudioElement | null>(null);
   const audioCacheRef = useRef<Map<string, string>>(new Map());
 
   useEffect(() => {
@@ -122,13 +121,17 @@ export function IdiomCard({ idiom, isSaved, onSaveToggle }: IdiomCardProps) {
     if (typeof window !== 'undefined' && window.speechSynthesis) {
       window.speechSynthesis.cancel();
     }
-    if (audioPlayerRef.current) {
-      try {
-        audioPlayerRef.current.pause();
-        audioPlayerRef.current.currentTime = 0;
-      } catch (_e) {
-        // ignore
-      }
+    // Stop all audio elements on the page (including cached ones)
+    try {
+      const audioElements = document.querySelectorAll('audio');
+      audioElements.forEach(audio => {
+        if (!audio.paused) {
+          audio.pause();
+          audio.currentTime = 0;
+        }
+      });
+    } catch (_e) {
+      // ignore
     }
   };
 
@@ -139,16 +142,21 @@ export function IdiomCard({ idiom, isSaved, onSaveToggle }: IdiomCardProps) {
       // Use cached audio if available
       const cachedUrl = audioCacheRef.current.get(text);
       if (cachedUrl) {
-        if (!audioPlayerRef.current) audioPlayerRef.current = new Audio();
-        audioPlayerRef.current.src = cachedUrl;
-        await audioPlayerRef.current.play();
+        // Create a fresh Audio object for each playback to avoid browser caching issues
+        const audio = new Audio();
+        audio.src = cachedUrl;
+        // Explicitly load to ensure fresh state
+        audio.load();
+        await audio.play();
         return true;
       }
 
       // Fetch with a short timeout to avoid long waits before fallback
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 1500);
-      const response = await fetch(`/api/tts?text=${encodeURIComponent(text)}`, { signal: controller.signal });
+      // Add cache-busting parameter for production environments
+      const cacheBuster = Date.now();
+      const response = await fetch(`/api/tts?text=${encodeURIComponent(text)}&t=${cacheBuster}`, { signal: controller.signal });
       clearTimeout(timeoutId);
 
       const contentType = response.headers.get('Content-Type') || '';
@@ -158,9 +166,12 @@ export function IdiomCard({ idiom, isSaved, onSaveToggle }: IdiomCardProps) {
       const url = URL.createObjectURL(blob);
       audioCacheRef.current.set(text, url);
 
-      if (!audioPlayerRef.current) audioPlayerRef.current = new Audio();
-      audioPlayerRef.current.src = url;
-      await audioPlayerRef.current.play();
+      // Create a fresh Audio object for each playback to avoid browser caching issues
+      const audio = new Audio();
+      audio.src = url;
+      // Explicitly load to ensure fresh state
+      audio.load();
+      await audio.play();
       return true;
     } catch (_err) {
       return false;

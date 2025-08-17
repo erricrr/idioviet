@@ -45,8 +45,10 @@ export async function GET(request: Request): Promise<Response> {
       status: 200,
       headers: {
         "Content-Type": "audio/mpeg",
-        // Cache short to leverage repeat phrases but allow content updates
-        "Cache-Control": "public, max-age=86400"
+        // Prevent aggressive caching to fix deployment audio issues
+        "Cache-Control": "public, max-age=3600, must-revalidate",
+        // Add ETag based on text content for better cache validation
+        "ETag": `"${Buffer.from(trimmed).toString('base64')}"`
       }
     });
   } catch (error) {
