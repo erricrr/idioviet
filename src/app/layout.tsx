@@ -1,6 +1,7 @@
 import type {Metadata} from 'next';
 import './globals.css';
 import { Toaster } from "@/components/ui/toaster";
+import { InfoDrawer } from "@/components/app/info-drawer";
 
 export const metadata: Metadata = {
   title: 'idioViet',
@@ -23,6 +24,7 @@ export default function RootLayout({
       </head>
       <body className="font-body antialiased" suppressHydrationWarning>
         {children}
+        <InfoDrawer />
         <Toaster />
       </body>
     </html>
