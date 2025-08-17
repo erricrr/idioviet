@@ -51,6 +51,8 @@ export function IdiomCard({ idiom, isSaved, onSaveToggle }: IdiomCardProps) {
   const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);
   const recordingTimerRef = useRef<NodeJS.Timeout | null>(null);
   const [isAnimatingProgress, setIsAnimatingProgress] = useState(false);
+  const audioPlayerRef = useRef<HTMLAudioElement | null>(null);
+  const audioCacheRef = useRef<Map<string, string>>(new Map());
 
   useEffect(() => {
     if (typeof window !== 'undefined' && window.speechSynthesis) {
@@ -116,8 +118,63 @@ export function IdiomCard({ idiom, isSaved, onSaveToggle }: IdiomCardProps) {
     setRecordingAttempted(true);
   };
 
-  const speak = (text: string) => {
+  const stopAllPlayback = () => {
+    if (typeof window !== 'undefined' && window.speechSynthesis) {
+      window.speechSynthesis.cancel();
+    }
+    if (audioPlayerRef.current) {
+      try {
+        audioPlayerRef.current.pause();
+        audioPlayerRef.current.currentTime = 0;
+      } catch (_e) {
+        // ignore
+      }
+    }
+  };
+
+  const playViaServerTts = async (text: string): Promise<boolean> => {
+    try {
+      stopAllPlayback();
+
+      // Use cached audio if available
+      const cachedUrl = audioCacheRef.current.get(text);
+      if (cachedUrl) {
+        if (!audioPlayerRef.current) audioPlayerRef.current = new Audio();
+        audioPlayerRef.current.src = cachedUrl;
+        await audioPlayerRef.current.play();
+        return true;
+      }
+
+      // Fetch with a short timeout to avoid long waits before fallback
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 1500);
+      const response = await fetch(`/api/tts?text=${encodeURIComponent(text)}`, { signal: controller.signal });
+      clearTimeout(timeoutId);
+
+      const contentType = response.headers.get('Content-Type') || '';
+      if (!response.ok || !contentType.includes('audio')) return false;
+
+      const blob = await response.blob();
+      const url = URL.createObjectURL(blob);
+      audioCacheRef.current.set(text, url);
+
+      if (!audioPlayerRef.current) audioPlayerRef.current = new Audio();
+      audioPlayerRef.current.src = url;
+      await audioPlayerRef.current.play();
+      return true;
+    } catch (_err) {
+      return false;
+    }
+  };
+
+  const speak = async (text: string) => {
+    // Try high-quality Vietnamese TTS via server first
+    const played = await playViaServerTts(text);
+    if (played) return;
+
+    // Fallback: Browser Web Speech API
     if (typeof window !== "undefined" && window.speechSynthesis) {
+      stopAllPlayback();
       const utterance = new SpeechSynthesisUtterance(text);
       utterance.lang = "vi-VN";
 
