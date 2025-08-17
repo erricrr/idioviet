@@ -157,7 +157,38 @@ export function IdiomCard({ idiom, isSaved, onSaveToggle, isActive = false, shou
 
   const playViaServerTts = async (text: string, timeoutMs: number = 1200): Promise<boolean> => {
     try {
-      stopAllPlayback();
+      // Don't reset example playing state if we're playing the example
+      const isPlayingExample = text === idiom.exampleVietnamese;
+      if (!isPlayingExample) {
+        stopAllPlayback();
+      } else {
+        // For example audio, only stop other audio without resetting example state
+        if (typeof window !== 'undefined' && window.speechSynthesis) {
+          window.speechSynthesis.cancel();
+        }
+        // Stop any previous programmatic audio that's not the example
+        if (currentTtsAudioRef.current && (currentTtsAudioRef.current as any).__tts_text !== idiom.exampleVietnamese) {
+          try {
+            currentTtsAudioRef.current.pause();
+            currentTtsAudioRef.current.currentTime = 0;
+          } catch (_e) {
+            // ignore
+          }
+          currentTtsAudioRef.current = null;
+        }
+        // Stop all other audio elements
+        try {
+          const audioElements = document.querySelectorAll('audio');
+          audioElements.forEach(audio => {
+            if (!audio.paused && audio !== currentTtsAudioRef.current) {
+              audio.pause();
+              audio.currentTime = 0;
+            }
+          });
+        } catch (_e) {
+          // ignore
+        }
+      }
 
       // Use cached audio if available
       const cachedUrl = audioCacheRef.current.get(text);
