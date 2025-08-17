@@ -45,10 +45,14 @@ export async function GET(request: Request): Promise<Response> {
       status: 200,
       headers: {
         "Content-Type": "audio/mpeg",
-        // Prevent aggressive caching to fix deployment audio issues
-        "Cache-Control": "public, max-age=3600, must-revalidate",
-        // Add ETag based on text content for better cache validation
-        "ETag": `"${Buffer.from(trimmed).toString('base64')}"`
+        "Content-Disposition": "inline; filename=\"tts.mp3\"",
+        "Accept-Ranges": "bytes",
+        // Absolutely disable CDN and browser caching (Netlify + browsers)
+        "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0, s-maxage=0",
+        "Pragma": "no-cache",
+        "Expires": "0",
+        // Netlify-specific header to prevent edge caching
+        "Netlify-CDN-Cache-Control": "no-store"
       }
     });
   } catch (error) {

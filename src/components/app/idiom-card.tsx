@@ -156,7 +156,7 @@ export function IdiomCard({ idiom, isSaved, onSaveToggle }: IdiomCardProps) {
       const timeoutId = setTimeout(() => controller.abort(), 1500);
       // Add cache-busting parameter for production environments
       const cacheBuster = Date.now();
-      const response = await fetch(`/api/tts?text=${encodeURIComponent(text)}&t=${cacheBuster}`, { signal: controller.signal });
+      const response = await fetch(`/api/tts?text=${encodeURIComponent(text)}&t=${cacheBuster}`, { signal: controller.signal, cache: 'no-store' });
       clearTimeout(timeoutId);
 
       const contentType = response.headers.get('Content-Type') || '';
