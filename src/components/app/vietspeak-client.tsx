@@ -24,6 +24,7 @@ export function VietSpeakClient() {
     const [savedIdiomIds, setSavedIdiomIds] = useState<Set<number>>(new Set());
     const [isSavedListOpen, setIsSavedListOpen] = useState(false);
     const [carouselApi, setCarouselApi] = useState<CarouselApi | null>(null);
+    const [selectedIndex, setSelectedIndex] = useState(0);
     const [isReviewingSaved, setIsReviewingSaved] = useState(false);
     const [progress, setProgress] = useState(0);
     const carouselRef = useRef(null);
@@ -45,11 +46,12 @@ export function VietSpeakClient() {
             const count = carouselApi.scrollSnapList().length;
             const newProgress = ((current + 1) / count) * 100;
             setProgress(newProgress);
+            setSelectedIndex(current);
         };
-    
+
         handleSelect(); // Set initial progress
         carouselApi.on("select", handleSelect);
-    
+
         return () => {
           carouselApi.off("select", handleSelect);
         };
@@ -93,7 +95,7 @@ export function VietSpeakClient() {
     const handleExitReview = () => {
         setIsReviewingSaved(false);
     }
-    
+
     const allIdioms = idioms;
     const savedIdioms = allIdioms.filter(idiom => savedIdiomIds.has(idiom.id));
     const idiomsToShow = isReviewingSaved ? savedIdioms : allIdioms;
@@ -106,10 +108,10 @@ export function VietSpeakClient() {
                     <Progress value={progress} className="w-full h-2" />
                 </div>
             )}
-            
+
             <div className="flex-grow flex items-center justify-center p-2 relative">
                 {isReviewingSaved && (
-                    <Button 
+                    <Button
                         onClick={handleExitReview}
                         variant="secondary"
                         className="absolute top-0 right-4 z-10"
@@ -118,21 +120,23 @@ export function VietSpeakClient() {
                         Exit Review
                     </Button>
                 )}
-                 <Carousel 
+                 <Carousel
                     ref={carouselRef}
                     setApi={setCarouselApi}
-                    className="w-full max-w-lg" 
+                    className="w-full max-w-lg"
                     opts={{ loop: !isReviewingSaved }}
                     key={isReviewingSaved ? 'saved' : 'all'}
                 >
                     <CarouselContent>
-                    {idiomsToShow.length > 0 ? idiomsToShow.map((idiom) => (
+                    {idiomsToShow.length > 0 ? idiomsToShow.map((idiom, index) => (
                         <CarouselItem key={idiom.id}>
                         <div className="p-1">
                             <IdiomCard
                                 idiom={idiom}
                                 isSaved={savedIdiomIds.has(idiom.id)}
                                 onSaveToggle={toggleSaveIdiom}
+                                isActive={index === selectedIndex}
+                                shouldPrefetch={index === selectedIndex + 1}
                             />
                         </div>
                         </CarouselItem>
@@ -149,7 +153,7 @@ export function VietSpeakClient() {
                 </Carousel>
             </div>
 
-            <SavedIdiomsList 
+            <SavedIdiomsList
                 idioms={savedIdioms}
                 onSelectIdiom={handleSelectIdiomFromList}
                 onReviewAll={handleReviewAll}

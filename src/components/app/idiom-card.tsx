@@ -38,11 +38,17 @@ interface IdiomCardProps {
   idiom: Idiom;
   isSaved: boolean;
   onSaveToggle: (id: number) => void;
+  isActive?: boolean;
+  shouldPrefetch?: boolean;
 }
 
 const MAX_RECORDING_TIME_MS = 7000;
 
-export function IdiomCard({ idiom, isSaved, onSaveToggle }: IdiomCardProps) {
+// Shared in-memory cache across all cards to enable instant playback once fetched
+const globalAudioCache: Map<string, string> = (globalThis as any).__IDIOM_AUDIO_CACHE__ || new Map();
+(globalThis as any).__IDIOM_AUDIO_CACHE__ = globalAudioCache;
+
+export function IdiomCard({ idiom, isSaved, onSaveToggle, isActive = false, shouldPrefetch = false }: IdiomCardProps) {
   const { toast } = useToast();
   const { isRecording, audioBlob, startRecording, stopRecording } = useRecorder();
   const [userAudioUrl, setUserAudioUrl] = useState<string | null>(null);
@@ -51,7 +57,7 @@ export function IdiomCard({ idiom, isSaved, onSaveToggle }: IdiomCardProps) {
   const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);
   const recordingTimerRef = useRef<NodeJS.Timeout | null>(null);
   const [isAnimatingProgress, setIsAnimatingProgress] = useState(false);
-  const audioCacheRef = useRef<Map<string, string>>(new Map());
+  const audioCacheRef = useRef<Map<string, string>>(globalAudioCache);
 
   useEffect(() => {
     if (typeof window !== 'undefined' && window.speechSynthesis) {
@@ -153,7 +159,7 @@ export function IdiomCard({ idiom, isSaved, onSaveToggle }: IdiomCardProps) {
 
       // Fetch with a short timeout to avoid long waits before fallback
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 1500);
+      const timeoutId = setTimeout(() => controller.abort(), 1200);
       // Add cache-busting parameter for production environments
       const cacheBuster = Date.now();
       const response = await fetch(`/api/tts?text=${encodeURIComponent(text)}&t=${cacheBuster}`, { signal: controller.signal, cache: 'no-store' });
@@ -177,6 +183,34 @@ export function IdiomCard({ idiom, isSaved, onSaveToggle }: IdiomCardProps) {
       return false;
     }
   };
+
+  // Prefetch TTS for active or soon-to-be-active card (phrase and first few chunks)
+  useEffect(() => {
+    if (!isActive && !shouldPrefetch) return;
+    const textsToPrefetch: string[] = [idiom.phrase, ...idiom.chunks.slice(0, 3).map(c => c.text)];
+    const controller = new AbortController();
+
+    const prefetchOne = async (text: string) => {
+      if (audioCacheRef.current.has(text)) return;
+      try {
+        const cacheBuster = Date.now();
+        const res = await fetch(`/api/tts?text=${encodeURIComponent(text)}&t=${cacheBuster}`, { signal: controller.signal, cache: 'no-store' });
+        if (!res.ok || !(res.headers.get('Content-Type') || '').includes('audio')) return;
+        const blob = await res.blob();
+        const url = URL.createObjectURL(blob);
+        audioCacheRef.current.set(text, url);
+      } catch (_e) {
+        // ignore prefetch errors
+      }
+    };
+
+    // Stagger slightly to avoid burst
+    textsToPrefetch.forEach((t, i) => {
+      setTimeout(() => prefetchOne(t), i * 50);
+    });
+
+    return () => controller.abort();
+  }, [isActive, shouldPrefetch, idiom.phrase, idiom.chunks]);
 
   const speak = async (text: string) => {
     // Try high-quality Vietnamese TTS via server first
