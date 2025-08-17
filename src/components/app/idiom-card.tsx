@@ -26,6 +26,7 @@ import {
   Info,
   Bookmark,
   Volume2,
+  Pause,
 } from "lucide-react";
 import { useRecorder } from "@/hooks/use-recorder";
 import { useEffect, useRef, useState } from "react";
@@ -58,6 +59,8 @@ export function IdiomCard({ idiom, isSaved, onSaveToggle, isActive = false, shou
   const recordingTimerRef = useRef<NodeJS.Timeout | null>(null);
   const [isAnimatingProgress, setIsAnimatingProgress] = useState(false);
   const audioCacheRef = useRef<Map<string, string>>(globalAudioCache);
+  const currentTtsAudioRef = useRef<HTMLAudioElement | null>(null);
+  const [isExamplePlaying, setIsExamplePlaying] = useState(false);
 
   useEffect(() => {
     if (typeof window !== 'undefined' && window.speechSynthesis) {
@@ -127,6 +130,17 @@ export function IdiomCard({ idiom, isSaved, onSaveToggle, isActive = false, shou
     if (typeof window !== 'undefined' && window.speechSynthesis) {
       window.speechSynthesis.cancel();
     }
+    // Stop any programmatic TTS audio
+    if (currentTtsAudioRef.current) {
+      try {
+        currentTtsAudioRef.current.pause();
+        currentTtsAudioRef.current.currentTime = 0;
+      } catch (_e) {
+        // ignore
+      }
+      currentTtsAudioRef.current = null;
+    }
+    setIsExamplePlaying(false);
     // Stop all audio elements on the page (including cached ones)
     try {
       const audioElements = document.querySelectorAll('audio');
@@ -141,7 +155,7 @@ export function IdiomCard({ idiom, isSaved, onSaveToggle, isActive = false, shou
     }
   };
 
-  const playViaServerTts = async (text: string): Promise<boolean> => {
+  const playViaServerTts = async (text: string, timeoutMs: number = 1200): Promise<boolean> => {
     try {
       stopAllPlayback();
 
@@ -150,16 +164,35 @@ export function IdiomCard({ idiom, isSaved, onSaveToggle, isActive = false, shou
       if (cachedUrl) {
         // Create a fresh Audio object for each playback to avoid browser caching issues
         const audio = new Audio();
+        // Stop any previous programmatic audio
+        if (currentTtsAudioRef.current) {
+          try {
+            currentTtsAudioRef.current.pause();
+            currentTtsAudioRef.current.currentTime = 0;
+          } catch (_e) {
+            // ignore
+          }
+        }
+        currentTtsAudioRef.current = audio;
+        (audio as any).__tts_text = text;
         audio.src = cachedUrl;
         // Explicitly load to ensure fresh state
         audio.load();
         await audio.play();
+        audio.onended = () => {
+          if (currentTtsAudioRef.current === audio) {
+            currentTtsAudioRef.current = null;
+          }
+          if (text === idiom.exampleVietnamese) {
+            setIsExamplePlaying(false);
+          }
+        };
         return true;
       }
 
       // Fetch with a short timeout to avoid long waits before fallback
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 1200);
+      const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
       // Add cache-busting parameter for production environments
       const cacheBuster = Date.now();
       const response = await fetch(`/api/tts?text=${encodeURIComponent(text)}&t=${cacheBuster}`, { signal: controller.signal, cache: 'no-store' });
@@ -174,20 +207,79 @@ export function IdiomCard({ idiom, isSaved, onSaveToggle, isActive = false, shou
 
       // Create a fresh Audio object for each playback to avoid browser caching issues
       const audio = new Audio();
+      // Stop any previous programmatic audio
+      if (currentTtsAudioRef.current) {
+        try {
+          currentTtsAudioRef.current.pause();
+          currentTtsAudioRef.current.currentTime = 0;
+        } catch (_e) {
+          // ignore
+        }
+      }
+      currentTtsAudioRef.current = audio;
+      (audio as any).__tts_text = text;
       audio.src = url;
       // Explicitly load to ensure fresh state
       audio.load();
       await audio.play();
+      audio.onended = () => {
+        if (currentTtsAudioRef.current === audio) {
+          currentTtsAudioRef.current = null;
+        }
+        if (text === idiom.exampleVietnamese) {
+          setIsExamplePlaying(false);
+        }
+      };
       return true;
     } catch (_err) {
       return false;
     }
   };
 
-  // Prefetch TTS for active or soon-to-be-active card (phrase and first few chunks)
+  const toggleExamplePlayback = async () => {
+    const active = currentTtsAudioRef.current;
+    const isExampleAudio = active && (active as any).__tts_text === idiom.exampleVietnamese;
+
+    // If current example audio exists
+    if (isExampleAudio) {
+      if (active!.paused) {
+        // Resume
+        try {
+          await active!.play();
+          setIsExamplePlaying(true);
+        } catch (_e) {
+          // If resume fails, try fresh play
+          const played = await playViaServerTts(idiom.exampleVietnamese, 3000);
+          setIsExamplePlaying(played);
+        }
+      } else {
+        // Pause without resetting time
+        try {
+          active!.pause();
+        } catch (_e) {
+          // ignore
+        }
+        setIsExamplePlaying(false);
+      }
+      return;
+    }
+
+    // Otherwise start a fresh example playback via server voice
+    setIsExamplePlaying(true);
+    const played = await playViaServerTts(idiom.exampleVietnamese, 3000);
+    if (!played) {
+      setIsExamplePlaying(false);
+    }
+  };
+
+  // Prefetch TTS for active or soon-to-be-active card (phrase, first few chunks, and example)
   useEffect(() => {
     if (!isActive && !shouldPrefetch) return;
-    const textsToPrefetch: string[] = [idiom.phrase, ...idiom.chunks.slice(0, 3).map(c => c.text)];
+    const textsToPrefetch: string[] = [
+      idiom.phrase,
+      ...idiom.chunks.slice(0, 3).map(c => c.text),
+      idiom.exampleVietnamese,
+    ];
     const controller = new AbortController();
 
     const prefetchOne = async (text: string) => {
@@ -212,10 +304,16 @@ export function IdiomCard({ idiom, isSaved, onSaveToggle, isActive = false, shou
     return () => controller.abort();
   }, [isActive, shouldPrefetch, idiom.phrase, idiom.chunks]);
 
-  const speak = async (text: string) => {
+  const speak = async (text: string, options?: { serverOnly?: boolean }) => {
+    const serverOnly = options?.serverOnly === true;
     // Try high-quality Vietnamese TTS via server first
-    const played = await playViaServerTts(text);
+    const played = await playViaServerTts(text, serverOnly ? 3000 : 1200);
     if (played) return;
+
+    if (serverOnly) {
+      // Do not fallback when server voice is required
+      return;
+    }
 
     // Fallback: Browser Web Speech API
     if (typeof window !== "undefined" && window.speechSynthesis) {
@@ -370,11 +468,15 @@ export function IdiomCard({ idiom, isSaved, onSaveToggle, isActive = false, shou
                       <Button
                         variant="ghost"
                         size="icon"
-                        aria-label="Play Vietnamese example"
-                        title="Play Vietnamese example"
-                        onClick={() => speak(idiom.exampleVietnamese)}
+                        aria-label={isExamplePlaying ? "Pause Vietnamese example" : "Play Vietnamese example"}
+                        title={isExamplePlaying ? "Pause Vietnamese example" : "Play Vietnamese example"}
+                        onClick={toggleExamplePlayback}
                       >
-                        <Volume2 className="w-4 h-4" />
+                        {isExamplePlaying ? (
+                          <Pause className="w-4 h-4" />
+                        ) : (
+                          <Volume2 className="w-4 h-4" />
+                        )}
                       </Button>
                     </div>
                     <p className="text-lg">{idiom.exampleVietnamese}</p>
