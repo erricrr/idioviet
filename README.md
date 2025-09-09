@@ -1,76 +1,68 @@
+[![Netlify Status](https://api.netlify.com/api/v1/badges/573353cc-08f3-46d8-8b02-50d06bae1511/deploy-status)](https://app.netlify.com/projects/idioviet/deploys)
+
 # idioViet
 
-An interactive Vietnamese idiom learning application designed to help you master Vietnamese expressions through pronunciation practice, audio playback, and detailed explanations.
+A Vietnamese idiom learning application designed to help you master Vietnamese expressions through pronunciation practice, audio playback, and detailed explanations.
 
-## About
-
-**idioViet** is a web application that makes learning Vietnamese idioms engaging and effective. Each idiom is presented with its pronunciation, meaning, and usage examples, complete with high-quality text-to-speech audio in Vietnamese.
-
-### Key Features
+## Features
 
 - **Interactive Learning**: Practice Vietnamese idioms with chunk-by-chunk pronunciation
 - **Audio Playback**: High-quality Vietnamese TTS for accurate pronunciation
 - **Recording Practice**: Record and compare your pronunciation attempts
-- **Detailed Explanations**: Literal translations, actual meanings, and contextual examples
-- **Save & Review**: Bookmark your favorite idioms for focused practice
-- **Progress Tracking**: Visual progress indicator as you navigate through idioms
-- **Mobile Optimized**: Designed specifically for mobile learning experiences
-
-## Features
-
-- **Vietnamese TTS Integration**: Server-side text-to-speech for authentic pronunciation
-- **Chunked Learning**: Break down idioms into manageable phrases for practice
-- **Audio Recording**: Record your pronunciation attempts and compare with native audio
-- **Comprehensive Examples**: Each idiom includes Vietnamese and English usage examples
-- **Save System**: Bookmark idioms for focused review sessions
-- **Carousel Navigation**: Smooth swipe navigation between idioms
-- **Responsive Design**: Optimized for mobile devices with touch-friendly interface
-- **Audio Caching**: Intelligent audio prefetching for seamless playback
+- **Save & Review**: Bookmark idioms for focused practice
+- **Mobile Optimized**: Responsive design for mobile learning
 
 ## Getting Started
 
-1. Clone the repository
-2. Install dependencies: `npm install`
-3. Run the development server: `npm run dev`
-4. Open [http://localhost:3000](http://localhost:3000) in your browser
+### Prerequisites
+
+- **Node.js**: Version 20 or higher (required)
+- **npm**: Comes with Node.js
+
+### Local Development Setup
+
+1. **Clone the repository**
+   ```bash
+   git clone <repository-url>
+   cd idioviet
+   ```
+
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
+
+3. **Start the development server**
+   ```bash
+   npm run dev
+   ```
+
+4. **Open your browser**
+   Navigate to [http://localhost:3000](http://localhost:3000)
+
+The application will run with all core features available immediately. The TTS (Text-to-Speech) functionality works out of the box using Google Translate's TTS service.
+
+### Available Scripts
+
+- `npm run dev` - Start the development server
+- `npm run build` - Build for production
+- `npm run start` - Start production server
 
 ## Tech Stack
 
 - **Framework**: Next.js 15 with TypeScript
-- **UI Components**: Radix UI with Tailwind CSS
-- **Audio Processing**: Custom TTS API with audio caching
-- **State Management**: React hooks with localStorage persistence
-- **Audio Recording**: Web Audio API integration
-- **AI Integration**: Google AI via Genkit (available for future features)
+- **UI**: Radix UI with Tailwind CSS
+- **Audio**: Custom TTS API with Web Audio recording
 
-## Project Structure
+## Troubleshooting
 
+### Audio Issues
+- Enable microphone permissions for recording
+- Click on the page first to allow audio autoplay
+- Check internet connection for TTS functionality
+
+### Port Issues
+```bash
+# If port 3000 is in use
+npm run dev -- --port 3001
 ```
-src/
-├── app/                 # Next.js app router
-├── components/          # React components
-│   ├── app/            # Main application components
-│   └── ui/             # Reusable UI components
-├── data/               # Static data (idioms)
-├── hooks/              # Custom React hooks
-└── lib/                # Utility functions
-```
-
-## Learning Approach
-
-idioViet uses a proven learning methodology:
-
-1. **Visual Presentation**: Clear, readable idiom display
-2. **Audio Reinforcement**: Native Vietnamese pronunciation
-3. **Chunked Practice**: Break complex phrases into manageable parts
-4. **Contextual Learning**: Real-world usage examples
-5. **Active Practice**: Recording and comparison features
-6. **Spaced Repetition**: Save and review system for retention
-
-## Contributing
-
-This project is designed for Vietnamese language learners. Contributions for additional idioms, improved audio quality, or enhanced learning features are welcome.
-
-## License
-
-idioViet &copy; 2025
